@@ -2,6 +2,8 @@
   "Visibility": "VISIBLE",
   "Title": "NoxVex Maintenance",
   "Description": "NoxVex sedang Maintenance",
+  "TimeMain" : "",
+  "TimeDone" : "",
   "MainTextButton": "Update? Click here",
   "Cancelable": "false",
   "CancelButtonText": "Cancel",
