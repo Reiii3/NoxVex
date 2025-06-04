@@ -5,7 +5,7 @@
   "TimeMain" : "",
   "TimeDone" : "",
   "MainTextButton": "Update? Click here",
-  "Cancelable": "false",
+  "Cancelable": "true",
   "CancelButtonText": "Cancel",
   "DownloadLink": "",
   "Version": "1.2.0-NoxUpv"
