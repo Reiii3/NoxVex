@@ -2,11 +2,11 @@
   "Visibility": "VISIBLE",
   "Title": "NoxVex Maintenance",
   "Description": "NoxVex sedang Maintenance",
-  "TimeMain" : "",
-  "TimeDone" : "",
+  "TimeMain" : "Kamis, 5 Juni 08.40 WIB",
+  "TimeDone" : "Kamis, 5 Juni 12.00 WIB",
   "MainTextButton": "Update? Click here",
   "Cancelable": "false",
   "CancelButtonText": "Cancel",
   "DownloadLink": "",
-  "Version": "1.2.0-NoxUpv"
+  "Version": "1.2.5-NoxUpv"
 }
