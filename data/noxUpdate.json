@@ -1,12 +1,12 @@
 {
   "Visibility": "VISIBLE",
-  "Title": "Maintenance",
-  "Description": "NoxVex Maintenance",
-  "TimeMain" : "Minggu, 8 juni 12.30",
-  "TimeDone" : "Minggu, 8 juni 14.40",
+  "Title": "Updatee!!",
+  "Description": "NoxVex Update",
+  "TimeMain" : "Selesai",
+  "TimeDone" : "Selesai",
   "MainTextButton": "Update? Click here",
   "Cancelable": "false",
   "CancelButtonText": "Cancel",
-  "DownloadLink": "",
+  "DownloadLink": "https://reiii3.github.io/NoxVex/Update-file/NoxVex135.zip",
   "Version": "1.3.5-NoxUpv"
 }
