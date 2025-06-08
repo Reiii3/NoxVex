@@ -1,12 +1,12 @@
 {
   "Visibility": "VISIBLE",
-  "Title": "NoxVex Announcement",
-  "Description": "Silahkan Download Versi Terbaru",
-  "TimeMain" : "Selesai",
-  "TimeDone" : "Selesai",
+  "Title": "Maintenance",
+  "Description": "NoxVex Maintenance",
+  "TimeMain" : "Minggu, 8 juni 12.30",
+  "TimeDone" : "Minggu, 8 juni 14.40",
   "MainTextButton": "Update? Click here",
   "Cancelable": "false",
   "CancelButtonText": "Cancel",
-  "DownloadLink": "https://reiii3.github.io/NoxVex/Update-file/NoxVex125.zip",
-  "Version": "1.2.5-NoxUpv"
+  "DownloadLink": "",
+  "Version": "1.3.5-NoxUpv"
 }
