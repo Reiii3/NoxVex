@@ -4,9 +4,9 @@
   "Description": "NoxVex Update",
   "TimeMain" : "Done",
   "TimeDone" : "Done,",
-  "MainTextButton": "Eror Update",
+  "MainTextButton": "Update? Click Here",
   "Cancelable": "false",
   "CancelButtonText": "Cancel",
-  "DownloadLink": "",
+  "DownloadLink": "https://reiii3.github.io/NoxVex/Update-file/NoxVex145.zip",
   "Version": "1.4.5-NoxUpv"
 }
