@@ -78,8 +78,8 @@ test_logic() {
         if [[ "$gamerun" != "stopped" ]]; then
            if [[ "$notif_run" != "stop" ]]; then
               cmd notification post -S bigtext -t "Smart Syatem" "nox_ai_status" "Mode Game : OFF"
-              notif_run="stop"
               smartSystemRmv
+              notif_run="stop"
            fi
           gamerun="stopped"
         fi
