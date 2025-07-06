@@ -1,6 +1,10 @@
 IDLE_TIME=5
 gamerun=""
 notif_run=""
+menu1=$(settings get global menu_gvr_smart_noxg1)
+menu2=$(settings get global menu_gvr_smart_noxg2)
+menu3=$(settings get global menu_gvr_smart_noxg3)
+menu4=$(settings get global menu_gvr_smart_noxg4)
 test_logic() {
    game=$(settings get global package_gvr_noxg)
    detected_apps=$(dumpsys window | grep "Window #" | grep WindowStateAnimator | grep -v "Window #0" | grep -Eo "$game")
