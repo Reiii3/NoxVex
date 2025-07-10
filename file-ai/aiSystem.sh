@@ -193,11 +193,44 @@ smartSystemRmv() {
   fi
   if [[ "$menu2" == "true" ]]; then
     echo " [$time] Fitur 2 is actived smart system"
+    settings delete global updatable_driver_production_opt_in  >/dev/null 2>&1;
   else
     echo " [$time] Fitur 2 is not-actived"
   fi
   if [[ "$menu3" == "true" ]]; then
     echo " [$time] Fitur 3 is actived smart system"
+    # source Code By kazuyo
+    setprop debug.composition.type mdp
+    setprop debug.hwc.dynThreshold 3.5
+    setprop debug.enable.sglscale 0
+    setprop debug.hwui.disable_vsync false
+    setprop debug.hwui.target_gpu_time_percent 50
+    setprop debug.gpuprio 5
+    setprop debug.sf.gpu_freq_index 5
+    setprop debug.sf.cpu_freq_index 5
+    setprop debug.ioprio 5
+    setprop debug.sf.mem_freq_index 5
+    if [[ "$soc" == "Mediatek" ]]; then
+     setprop debug.mediatek.appgamepq_compress 0
+     setprop debug.mediatek.disp_decompress 0
+     setprop debug.mediatek.appgamepq 1
+     setprop debug.mediatek.game_pq_enable 0
+     setprop debug.mediatek.high_frame_rate_sf_set_big_core_fps_threshold 90
+     setprop debug.mtklog.netlog.enable 1
+     setprop debug.mtklog.aee.Running 1
+     setprop debug.mtklog.aee.enable 1
+     setprop debug.mtklog.log2sd.path ""
+     setprop debug.mtk.aee.db 1
+     setprop debug.MB.running 1
+   elif [[ "$soc" == "Qualcom" ]]; then
+     setprop debug.qti.am.resource.type large
+     setprop debug.qc.hardware false
+     setprop debug.qctwa.preservebuf 0
+     setprop debug.qualcomm.sns.libsensor1 1
+     setprop debug.qualcomm.sns.daemon 1
+     setprop debug.qualcomm.sns.hal 1
+     setprop debug.qctwa.statusbar 0
+   fi
   else
     echo " [$time] Fitur 3 is not-actived"
   fi
@@ -222,7 +255,8 @@ test_logic() {
    if [[  -n "$detected_apps" ]]; then
         if [[ "$gamerun" != "running" ]] && [[ "$render_detected" != "skiavk" ]]; then
            if [[ "$notif_run" != "run" ]]; then
-              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : ON" >/dev/null 2>&1
+              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : ON
+              Game Mode On In Time : $time" >/dev/null 2>&1
               smartSystemRun
               notif_run="run"
            fi
@@ -231,7 +265,8 @@ test_logic() {
     else
         if [[ "$gamerun" != "stopped" ]]; then
            if [[ "$notif_run" != "stop" ]]; then
-              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : OFF" >/dev/null 2>&1
+              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : OFF
+              Game Mode Off In Time : $time" >/dev/null 2>&1
               smartSystemRmv
               notif_run="stop"
            fi
