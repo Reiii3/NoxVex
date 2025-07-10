@@ -188,7 +188,7 @@ test_logic() {
    if [[  -n "$detected_apps" ]]; then
         if [[ "$gamerun" != "running" ]] && [[ "$render_detected" != "skiavk" ]]; then
            if [[ "$notif_run" != "run" ]]; then
-              cmd notification post -S bigtext -t "Smart Syatem" "nox_ai_status" "Mode Game : ON"
+              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : ON" >/dev/null 2>&1
               smartSystemRun
               notif_run="run"
            fi
@@ -197,7 +197,7 @@ test_logic() {
     else
         if [[ "$gamerun" != "stopped" ]]; then
            if [[ "$notif_run" != "stop" ]]; then
-              cmd notification post -S bigtext -t "Smart Syatem" "nox_ai_status" "Mode Game : OFF"
+              cmd notification post -S bigtext -t '️Smart System🔄' -i file:///sdcard/VortexModules/NOXG/vmods.png -I file:///sdcard/VortexModules/NOXG/vmods.png "noxg_engine_mode" "Game Mode : OFF" >/dev/null 2>&1
               smartSystemRmv
               notif_run="stop"
            fi
