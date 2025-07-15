@@ -17,6 +17,10 @@ if [[ "$1" = "true" ]]; then
   setprop debug.cpu_core_ctl_busy_down_thres 35
   setprop debug.cpu_core_ctl_busy_up_thres 70
   setprop debug.cpu_core_ctl_max_cores 8
+  setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+  setprop debug.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
+  setprop debug.powehint.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+  setprop debug.powehint.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
   if [[ "$soc" == "Mediatek" ]]; then
    setprop debug.mediatek.appgamepq_compress 1
    setprop debug.mediatek.disp_decompress 1
@@ -49,6 +53,10 @@ else
   setprop debug.cpu_core_ctl_busy_down_thres 35
   setprop debug.cpu_core_ctl_busy_up_thres 50
   setprop debug.cpu_core_ctl_max_cores 4
+   setprop debug.cluster_little-set_his_speed ""
+  setprop debug.cluster_big-set_his_speed ""
+  setprop debug.powehint.cluster_little-set_his_speed ""
+  setprop debug.powehint.cluster_big-set_his_speed ""
   if [[ "$soc" == "Mediatek" ]]; then
    setprop debug.mediatek.appgamepq_compress 0
    setprop debug.mediatek.disp_decompress 0
