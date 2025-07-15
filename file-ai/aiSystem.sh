@@ -21,6 +21,10 @@ smartSystemRun() {
       setprop debug.sf.vsync_reactor_ignore_present_fences $3
       setprop debug.sf.use_phase_offsets_as_durations $2
       setprop debug.sf.kernel_idle_timer_update_overlay $2
+      setprop debug.sf.hw 1
+      setprop debug.egl.force_taa false
+      setprop debug.egl.force_smaa false
+      setprop debug.egl.force_txaa false
       
     # SurfaceFlinger Optimize PrimeShader
       for i in solid_layers shadow_layers image_layers clipped_layers edge_extension_shader hole_punch solid_dimmed_layers image_dimmed_layers pip_image_layers transparent_image_dimmed_layers clipped_dimmed_image_layers;do setprop debug.sf.prime_shader_cache.$i $1; done
@@ -91,6 +95,14 @@ smartSystemRun() {
     setprop debug.sf.cpu_freq_index 7
     setprop debug.ioprio 7
     setprop debug.sf.mem_freq_index 7
+    setprop debug.cpu_core_ctl_active 1
+    setprop debug.cpu_core_ctl_busy_down_thres 35
+    setprop debug.cpu_core_ctl_busy_up_thres 70
+    setprop debug.cpu_core_ctl_max_cores 8
+    setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+    setprop debug.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
+    setprop debug.powehint.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+    setprop debug.powehint.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
     if [[ "$soc" == "Mediatek" ]]; then
      setprop debug.mediatek.appgamepq_compress 1
      setprop debug.mediatek.disp_decompress 1
@@ -142,6 +154,10 @@ smartSystemRmv() {
       setprop debug.sf.vsync_reactor_ignore_present_fences $3
       setprop debug.sf.use_phase_offsets_as_durations $2
       setprop debug.sf.kernel_idle_timer_update_overlay $2
+      setprop debug.sf.hw 0
+      setprop debug.egl.force_taa true
+      setprop debug.egl.force_smaa true
+      setprop debug.egl.force_txaa true
     # SurfaceFlinger Optimize PrimeShader
       for i in solid_layers shadow_layers image_layers clipped_layers edge_extension_shader hole_punch solid_dimmed_layers image_dimmed_layers pip_image_layers transparent_image_dimmed_layers clipped_dimmed_image_layers;do setprop debug.sf.prime_shader_cache.$i $1; done
     }
