@@ -13,6 +13,10 @@ if [[ "$1" = "true" ]]; then
   setprop debug.sf.cpu_freq_index 7
   setprop debug.ioprio 7
   setprop debug.sf.mem_freq_index 7
+  setprop debug.cpu_core_ctl_active 1
+  setprop debug.cpu_core_ctl_busy_down_thres 35
+  setprop debug.cpu_core_ctl_busy_up_thres 70
+  setprop debug.cpu_core_ctl_max_cores 8
   if [[ "$soc" == "Mediatek" ]]; then
    setprop debug.mediatek.appgamepq_compress 1
    setprop debug.mediatek.disp_decompress 1
@@ -41,6 +45,10 @@ else
   setprop debug.ioprio 5
   setprop debug.sf.cpu_freq_index 5
   setprop debug.sf.mem_freq_index 5
+  setprop debug.cpu_core_ctl_active 0
+  setprop debug.cpu_core_ctl_busy_down_thres 35
+  setprop debug.cpu_core_ctl_busy_up_thres 50
+  setprop debug.cpu_core_ctl_max_cores 4
   if [[ "$soc" == "Mediatek" ]]; then
    setprop debug.mediatek.appgamepq_compress 0
    setprop debug.mediatek.disp_decompress 0
