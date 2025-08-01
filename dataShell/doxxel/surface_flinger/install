@@ -61,6 +61,7 @@ auto_sf_dyn() {
 main_active() {
   auto_sf_dyn $run_sf 1
   other false 1 0
+  echo "Dynamic SurfaceFlinger Actived"
 }
 
 main_active
