@@ -1,1 +1,3 @@
-
+settings put system view.touch_slop 1
+setprop debug.javafx.animation.fullspeed true
+setprop debug.javafx.animation.framerate 90
