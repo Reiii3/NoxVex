@@ -27,6 +27,9 @@
     "bed47d": {
       "subscriptionType": "unlimited"
     },
+    "6f2e5c": {
+      "subscriptionType": "unlimited"
+    },
     "test": {
       "subscriptionType": "regular",
       "start":"2025-07-10T00:00:00.000Z",
