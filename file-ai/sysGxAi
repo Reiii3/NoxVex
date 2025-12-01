@@ -42,7 +42,7 @@ saver_mode() {
 systemAI() {
    time=$(date "+%d-%m-%Y %H:%M")
    persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
-   game=$(settings get global package_axm_gx)
+   game=$(cat /data/data/com.android.shell/AxManager/plugins/gx_pride/system/game)
    detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
    render_detected=$(getprop debug.hwui.renderer)
    
