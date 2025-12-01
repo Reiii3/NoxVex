@@ -1,0 +1,121 @@
+IDLE_TIME=5
+gamerun=""
+notif_run=""
+battery_lower=""
+running_mode_detection=""
+settings put global gx_smart_version 1.0.5
+
+game_mode() {
+    # Source By CmdTweak @HoyoSlave
+    cmd power set-adaptive-power-saver-enabled false
+    cmd power set-fixed-performance-mode-enabled true
+    cmd power set-mode 0
+    
+    # I got this source from lykafka module
+    setprop debug.renderengine.backend skiavkthreaded
+    am force-stop com.google.android.gms
+    cmd activity force-stop com.xiaomi.joyose
+    dumpsys deviceidle whitelist -com.google.android.gms
+    sleep 0.5
+    cmd thermalservice override-status 0
+    
+    # Oppo Battrey High Performance Source In Oppo A57
+    if [[ $(settings get system high_performance_mode_on) ]]; then
+          cmd settings put system high_performance_mode_on 1
+          cmd settings put system high_performance_mode_on_when_shutdown 1
+    fi
+}
+
+saver_mode() {
+    # Source By CmdTweak @HoyoSlave
+    cmd power set-adaptive-power-saver-enabled true
+    cmd power set-fixed-performance-mode-enabled false
+    dumpsys deviceidle whitelist +com.google.android.gms
+   
+    # Oppo Battrey High Performance Source In Oppo A57
+    if [[ $(settings get system high_performance_mode_on) ]]; then
+          cmd settings put system high_performance_mode_on 0
+          cmd settings put system high_performance_mode_on_when_shutdown 0
+    fi
+}
+
+systemAI() {
+   time=$(date "+%d-%m-%Y %H:%M")
+   persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
+   game=$(settings get global package_axm_gx)
+   detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
+   render_detected=$(getprop debug.hwui.renderer)
+   
+   if echo "$game" | grep -qw "$detected_apps"; then
+      gameDetected="true"
+      if [[ $persentase_battrey -ge 30 ]]; then
+         mode_now="game-mode"
+      elif [[ $persentase_battrey -ge 20 && $persentase_battrey -le 25 ]]; then
+         mode_now="force-mode"
+      elif [[ $persentase_battrey -lt 20 ]]; then
+         mode_now="force-saver-mode"
+      fi
+   else
+      gameDetected="false"
+      mode_now="saver-mode"
+   fi
+
+   if [[ $mode_now != $running_mode_detection ]]; then
+      notif_run="run"
+   fi
+
+   if [[ $gameDetected == "true" ]]; then
+      if [[ $persentase_battrey -ge "30" ]]; then
+         if [[ $render_detected != "skiavk" || $render_detected == "skiavk" ]]; then
+            if [[ $notif_run == "run" ]]; then
+               echo "[Info] Apps : $detected_apps | game-mode ON | saver-mode ON | Battrey : $persentase_battrey"
+               am start -a AxManager.TOAST -e text "Smart GxPride : Accelerate Game Mode"
+               setprop debug.hwui.renderer skiavk
+               game_mode
+               notif_run="disable"
+               running_mode_detection="game-mode"
+            fi
+         fi
+      elif [[ $persentase_battrey -ge 20 && $persentase_battrey -le 25 ]]; then
+         if [[ $render_detected != "skiavk" || $render_detected == "skiavk" ]]; then
+            if [[ $notif_run == "run" ]]; then
+               echo "[Info] Apps : $detected_apps | game-mode ON-force-mode | saver-mode OFF | Battrey : $persentase_battrey"
+               am start -a AxManager.TOAST -e text "Smart GxPride : Force Accelerate Game Mode"
+               setprop debug.hwui.renderer skiavk
+               game_mode
+               notif_run="disable"
+               running_mode_detection="force-mode"
+            fi
+         fi
+      elif [[ $persentase_battrey -lt 20 ]]; then
+         if [[ $render_detected != "skiavk" || $render_detected == "skiavk" ]]; then
+            if [[ $notif_run == "run" ]]; then
+               echo "[Info] Apps : $detected_apps | game-mode OFF | saver-mode ON-force-mode | Battrey : $persentase_battrey"
+               am start -a AxManager.TOAST -e text "Smart GxPride : Force Savee Mode Warning Your Device Lowee Battrey"
+               echo "[info] Device Condition : Running a Game"
+               setprop debug.hwui.renderer skiavk
+               saver_mode
+               notif_run="disable"
+               running_mode_detection="force-saver-mode"
+            fi
+         fi
+      fi
+   else
+      if [[ $render_detected != "opengl" ]]; then
+         if [[ $notif_run == "run" ]]; then
+            echo "[Info] Apps : $detected_apps | game-mode OFF | saver-mode ON | Battrey : $persentase_battrey"
+            echo "[info] Device Condition : Running a Idle System"
+            am start -a AxManager.TOAST -e text "Smart GxPride : Saver Mode Idle System"
+            setprop debug.hwui.renderer opengl
+            saver_mode
+            notif_run="disable"
+            running_mode_detection="saver-mode"
+         fi
+      fi
+   fi
+}
+
+while true; do
+   systemAI
+   sleep "$IDLE_TIME"
+done
