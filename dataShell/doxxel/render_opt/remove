@@ -13,4 +13,12 @@ setprop debug.vulkan.layers ""
 setprop debug.hwui.render_dirty_regions true
 setprop debug.hwui.skia_atrace_enabled true
 setprop debug.qsg_renderer 0
+setprop debug.egl.force_fxaa true
+setprop debug.egl.force_taa true
+setprop debug.egl.force_msaa true
+setprop debug.egl.force_ssaa true
+setprop debug.egl.force_smaa true
+setprop debug.egl.force_mlaa true
+setprop debug.egl.force_txaa true
+setprop debug.egl.force_csaa true
 echo "Render Optimization Deactivated"
