@@ -29,3 +29,5 @@ elif [[ "$soc" == "Qualcom" ]]; then
  setprop debug.qctwa.statusbar "0"
  setprop debug.qctwa.preservebuf "0"
 fi
+
+echo "Chipset Optimizer Deactivated"
