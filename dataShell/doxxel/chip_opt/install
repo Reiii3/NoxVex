@@ -32,5 +32,8 @@ elif [[ "$soc" == "Qualcom" ]]; then
  setprop debug.qc.hardware "true"
  setprop debug.qctwa.statusbar "1"
  setprop debug.qctwa.preservebuf "1"
+ setprop debug.qualcomm.sns.hal "0"
+ setprop debug.qualcomm.sns.daemon "0"
+ setprop debug.qualcomm.sns.libsensor1 "0"
 fi
 echo "Chipset Optimizer Actived"
