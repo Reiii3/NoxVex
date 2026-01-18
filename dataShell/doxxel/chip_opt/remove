@@ -13,7 +13,7 @@ setprop debug.cpu_core_ctl_active 0
 setprop debug.cpu_core_ctl_busy_down_thres 35
 setprop debug.cpu_core_ctl_busy_up_thres 50
 setprop debug.cpu_core_ctl_max_cores 4
- setprop debug.cluster_little-set_his_speed ""
+setprop debug.cluster_little-set_his_speed ""
 setprop debug.cluster_big-set_his_speed ""
 setprop debug.powehint.cluster_little-set_his_speed ""
 setprop debug.powehint.cluster_big-set_his_speed ""
@@ -23,11 +23,18 @@ if [[ "$soc" == "Mediatek" ]]; then
  setprop debug.mediatek.appgamepq 0
  setprop debug.mediatek.game_pq_enable p
  setprop debug.mediatek.high_frame_rate_sf_set_big_core_fps_threshold 80
+ setprop debug.mtklog.netlog.enable "1"
+ setprop debug.mtklog.aee.Running "1"
+ setprop debug.mtklog.aee.enable "1"
+ setprop debug.mtklog.log2sd.path ""
 elif [[ "$soc" == "Qualcom" ]]; then
  setprop debug.qti.am.resource.type ""
  setprop debug.qc.hardware "false"
  setprop debug.qctwa.statusbar "0"
  setprop debug.qctwa.preservebuf "0"
+ setprop debug.qualcomm.sns.hal "1"
+ setprop debug.qualcomm.sns.daemon "1"
+ setprop debug.qualcomm.sns.libsensor1 "1"
 fi
 
 echo "Chipset Optimizer Deactivated"
