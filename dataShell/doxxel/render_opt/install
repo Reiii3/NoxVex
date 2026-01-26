@@ -15,8 +15,8 @@ setprop debug.hwui.skia_atrace_enabled false
 setprop debug.qsg_renderer 0
 setprop debug.renderengine.backend skiavkthreaded
 setprop debug.renderengine.capture_filename ''
-setprop debug.renderengine.blur_algorithm] true
-setprop debug.renderengine.capture_skia_ms] 0
+setprop debug.renderengine.blur_algorithm true
+setprop debug.renderengine.capture_skia_ms 0
 setprop debug.renderengine.graphite true
 setprop debug.renderengine.graphite_preview_optin true
 setprop debug.renderengine.restore_blur_step true
