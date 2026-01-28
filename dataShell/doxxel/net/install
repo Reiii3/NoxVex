@@ -1,1 +1,21 @@
-
+ping -c 3 1.1.1.1
+settings put global private_dns_mode hostname
+settings put global private_dns_specifier one.one.one.one
+cmd settings put global netstats_enabled 0
+cmd wifi remove-all-suggestions
+cmd wifi set-ipreach-disconnect disabled
+cmd wifi set-scan-always-available disabled
+cmd wifi set-verbose-logging disabled -l 0
+cmd wifi set-low-latency-mode enabled
+settings put global smart_network_switching 0 2>/dev/null
+settings put global captive_portal_mode 0
+settings put global captive_portal_detection_enabled 0
+settings put global network_scoring_ui_enabled 0
+settings put global tether_dun_required 0
+settings put global tcp_default_init_rwnd 60
+for a in com.google.android.apps.messaging \
+      com.google.android.gms.location.history \
+      com.google.android.networkstack.tethering; do
+  cmd activity force-stop $a 2>/dev/null &
+done
+for a in $(cmd package list packages --user 0 network|cut -f2 -d:);do cmd activity force-stop$a & done
