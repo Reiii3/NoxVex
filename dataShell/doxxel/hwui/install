@@ -11,3 +11,4 @@ setprop debug.hwui.capture_skp_enabled false
 setprop debug.hwui.profile 0
 setprop debug.hwui.skip_empty_damage 1
 setprop debug.hwui.skip_eglmanager_telemetry true
+echo "HWUI Compotion Activated"
