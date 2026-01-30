@@ -1,4 +1,5 @@
 if [[ $(settings get global netstats_enabled) == "0" ]]; then
+  settings delete global private_dns_mode
   ifconfig | awk '/ccmni1/{flag=1} flag && /inet addr:/ {print $2; exit}' | cut -d: -f2)
   settings put global private_dns_mode opportunistic
   settings delete global private_dns_specifier
