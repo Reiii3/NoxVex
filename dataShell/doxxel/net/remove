@@ -5,3 +5,4 @@ if [[ $(settings get global netstats_enabled) == "0" ]]; then
   settings delete global private_dns_specifier
   cmd settings delete global netstats_enabled
 fi
+echo "Net Optimizer Deactivated"
