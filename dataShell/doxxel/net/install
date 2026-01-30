@@ -19,3 +19,4 @@ for a in com.google.android.apps.messaging \
   cmd activity force-stop $a 2>/dev/null &
 done
 for a in $(cmd package list packages --user 0 network|cut -f2 -d:);do cmd activity force-stop$a & done
+echo "Net Optimizer Activated"
