@@ -275,8 +275,8 @@ service_server() {
     }
     
     notif_run() {
-        cmd=$(echo "Mode Status : [ Game Mode ]\ncosmic AI Engine | [Enjoy Your Game]")
-        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]")
+        cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
         >/dev/null 2>&1
@@ -284,8 +284,8 @@ service_server() {
     
     
     notif_force() {
-        cmd=$(echo "Mode Status : [ Game Force Mode ]\ncosmic AI Engine | [Enjoy Your Game And Battery Is Low]")
-        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]")
+        cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
         >/dev/null 2>&1
@@ -293,17 +293,17 @@ service_server() {
     
     
     notif_stop() {
-        cmd=$(echo "Mode Status : [ Saver Mode ]\ncosmic AI Engine | [Enjoy Efficiency Battery]")
-        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]")
+        cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
         >/dev/null 2>&1
     }
 
     cache_cleaner() {
-        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
-        "cosmic AI Engine Cache Cleaner - Midnight Optimization" \
+        "LimetsU AI Engine Cache Cleaner - Midnight Optimization" \
         >/dev/null 2>&1
     
         find /data/data/*/cache/* -delete 2>/dev/null
