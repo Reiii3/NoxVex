@@ -248,6 +248,7 @@ service_engine() {
         am start -a AxManager.TOAST -e text "$text" >/dev/null 2>&1
     }
 
+    # MAIN CORE
     while true; do
         # Basic Resource
         GAME_LIST=$(cat /data/local/tmp/game.txt)
@@ -346,3 +347,5 @@ service_engine() {
         sleep "$IDLE_TIME"
     done
 }
+
+service_engine
