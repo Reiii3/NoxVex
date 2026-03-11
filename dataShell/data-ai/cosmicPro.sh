@@ -291,8 +291,8 @@ service_engine() {
             notif_state="run"
         fi
 
-        if [[ $gameDetected == "true"]]; then
-            if [[ $notif_state == "run"]]; then
+        if [[ $gameDetected == "true" ]]; then
+            if [[ $notif_state == "run" ]]; then
                 notif_run
                 toast "Game Mode | Initializer" >/dev/null 2>&1
                 main_active_sf
@@ -314,7 +314,7 @@ service_engine() {
                 notif_state="stop"
             fi
         else
-            if [[ $notif_state == "run"]]; then
+            if [[ $notif_state == "run" ]]; then
                 notif_stop
                 toast "Saver Mode | Initializer" >/dev/null 2>&1
                 main_remove_sf
