@@ -1,34 +1,34 @@
 service_server() {
-    LOG_FILE="/data/local/tmp/limetsu.log"
+    LOG_FILE="/data/local/tmp/cosmic.log"
     IDLE_TIME=5
     running_mode_detection=""
     
-    settings put global limetsu_engine_version 1.5.4
-    settings put global limetsu_engine_enable limet_server.pid
+    settings put global cosmic_engine_version 1.5.4
+    settings put global cosmic_engine_enable limet_server.pid
     
-    echo "[Service] LIMETSU Started at $(date)" >> "$LOG_FILE"
+    echo "[Service] cosmic Started at $(date)" >> "$LOG_FILE"
     game_mode() {
-          [ -n "$detected_apps" ] && \
-          settings put global updatable_driver_production_opt_in_apps "$detected_apps"
-      
-          # Source By CmdTweak @HoyoSlave
-          cmd power set-adaptive-power-saver-enabled false
-          cmd power set-fixed-performance-mode-enabled true
-          cmd power set-mode 0
-      
-          # From lykafka module
-          setprop debug.renderengine.backend skiavkthreaded
-          am force-stop com.google.android.gms
-          cmd activity force-stop com.xiaomi.joyose
-          dumpsys deviceidle whitelist -com.google.android.gms
-          sleep 0.5
-          cmd thermalservice override-status 0
-          setprop debug.composition.type mdp
-          cmd activity memory-factor set 0
-          setprop debug.egl.hw 1
-          setprop debug.sf.set_idle_timer_ms 0
-          
-          settings put global power_check_max_cpu_1 310
+        [ -n "$detected_apps" ] && \
+        settings put global updatable_driver_production_opt_in_apps "$detected_apps"
+    
+        # Source By CmdTweak @HoyoSlave
+        cmd power set-adaptive-power-saver-enabled false
+        cmd power set-fixed-performance-mode-enabled true
+        cmd power set-mode 0
+    
+        # From lykafka module
+        setprop debug.renderengine.backend skiavkthreaded
+        am force-stop com.google.android.gms
+        cmd activity force-stop com.xiaomi.joyose
+        dumpsys deviceidle whitelist -com.google.android.gms
+        sleep 0.5
+        cmd thermalservice override-status 0
+        setprop debug.composition.type mdp
+        cmd activity memory-factor set 0
+        setprop debug.egl.hw 1
+        setprop debug.sf.set_idle_timer_ms 0
+        
+        settings put global power_check_max_cpu_1 310
         settings put global power_check_max_cpu_2 370
         settings put global power_check_max_cpu_3 140
         settings put global power_check_max_cpu_4 170
@@ -56,31 +56,31 @@ service_server() {
         cmd settings put system POWER_SAVE_PRE_HIDE_MODE performance
         cmd settings put system speed_mode 1
 
-          
-          # CPU Reducer
-          settings put global battery_saver_adaptive_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-
-          settings put global battery_saver_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
         
-          settings put global battery_saver_device_specific_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-      
-          # Oppo Battery High Performance
-          if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-              cmd settings put system high_performance_mode_on 1
-              cmd settings put system high_performance_mode_on_when_shutdown 1
-          fi
-      }
-      
-      saver_mode() {
-          settings delete global updatable_driver_production_opt_in >/dev/null 2>&1
-      
-          cmd power set-adaptive-power-saver-enabled true
-          cmd power set-fixed-performance-mode-enabled false
-          cmd powrr set-mode 1
-          dumpsys deviceidle whitelist +com.google.android.gms
-          setprop debug.composition.type c2d
-          
-          settings put global power_check_max_cpu_1 150
+        # CPU Reducer
+        settings put global battery_saver_adaptive_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
+
+        settings put global battery_saver_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
+        
+        settings put global battery_saver_device_specific_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
+    
+        # Oppo Battery High Performance
+        if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
+            cmd settings put system high_performance_mode_on 1
+            cmd settings put system high_performance_mode_on_when_shutdown 1
+        fi
+    }
+    
+    saver_mode() {
+        settings delete global updatable_driver_production_opt_in >/dev/null 2>&1
+    
+        cmd power set-adaptive-power-saver-enabled true
+        cmd power set-fixed-performance-mode-enabled false
+        cmd powrr set-mode 1
+        dumpsys deviceidle whitelist +com.google.android.gms
+        setprop debug.composition.type c2d
+        
+        settings put global power_check_max_cpu_1 150
         settings put global power_check_max_cpu_2 210
         settings put global power_check_max_cpu_3 90
         settings put global power_check_max_cpu_4 90
@@ -100,63 +100,63 @@ service_server() {
         cmd settings put system master_motion 0
         cmd settings put system motion_engine 0
         cmd shortcut reset-all-throttling
-          
-          settings put global battery_saver_adaptive_constants ""
-          settings put global battery_saver_constants ""
-          settings put global battery_saver_device_specific_constants ""
-      
-          if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-              cmd settings put system high_performance_mode_on 0
-              cmd settings put system high_performance_mode_on_when_shutdown 0
-          fi
-      }
-      
-      install_background() {
-           apps="
-              com.facebook.katana
-              com.zhiliaoapp.musically
-              com.ss.android.ugc.trill
-              com.instagram.android
-              com.facebook.orca
-              com.snapchat.android
-              com.twitter.android
-              org.telegram.messenger
-              org.telegram.plus
-              org.thunderdog.challegram
-              com.whatsapp.w4b
-              com.ss.android.ugc.trill
-              com.openai.chatgpt
-              com.coloros.movetosdcard
-              com.google.android.apps.photos
-              com.google.android.youtube
-              com.google.android.apps.youtube.music
-              com.google.android.apps.docs
-              com.google.android.apps.maps
-              com.facebook.katana
-              com.facebook.orca
-              com.instagram.android
-              com.snapchat.android
-              com.whatsapp
-              com.zhiliaoapp.musically
-              com.ss.android.article.news
-              com.netflix.mediaclient
-              com.spotify.music
-              com.touchtype.swiftkey
-              com.google.android.as
-              com.google.android.ext.services
-              com.google.android.providers.media.module
-              com.coloros.movetosdcard
-              com.oplus.statistics.rom
-              com.coloros.smartsidebar:ui
-              com.coloros.smartsidebar:edgepanel
-              com.coloros.alarmclock:clockWidget
-              com.coloros.weather.service
-              com.oplus.romupdate
-              com.oplus.deepthinker
-              com.oplus.gesture
-              com.heytap.accessory
-              com.oplus.nas
-          "
+        
+        settings put global battery_saver_adaptive_constants ""
+        settings put global battery_saver_constants ""
+        settings put global battery_saver_device_specific_constants ""
+    
+        if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
+            cmd settings put system high_performance_mode_on 0
+            cmd settings put system high_performance_mode_on_when_shutdown 0
+        fi
+    }
+    
+    install_background() {
+        apps="
+            com.facebook.katana
+            com.zhiliaoapp.musically
+            com.ss.android.ugc.trill
+            com.instagram.android
+            com.facebook.orca
+            com.snapchat.android
+            com.twitter.android
+            org.telegram.messenger
+            org.telegram.plus
+            org.thunderdog.challegram
+            com.whatsapp.w4b
+            com.ss.android.ugc.trill
+            com.openai.chatgpt
+            com.coloros.movetosdcard
+            com.google.android.apps.photos
+            com.google.android.youtube
+            com.google.android.apps.youtube.music
+            com.google.android.apps.docs
+            com.google.android.apps.maps
+            com.facebook.katana
+            com.facebook.orca
+            com.instagram.android
+            com.snapchat.android
+            com.whatsapp
+            com.zhiliaoapp.musically
+            com.ss.android.article.news
+            com.netflix.mediaclient
+            com.spotify.music
+            com.touchtype.swiftkey
+            com.google.android.as
+            com.google.android.ext.services
+            com.google.android.providers.media.module
+            com.coloros.movetosdcard
+            com.oplus.statistics.rom
+            com.coloros.smartsidebar:ui
+            com.coloros.smartsidebar:edgepanel
+            com.coloros.alarmclock:clockWidget
+            com.coloros.weather.service
+            com.oplus.romupdate
+            com.oplus.deepthinker
+            com.oplus.gesture
+            com.heytap.accessory
+            com.oplus.nas
+        "
         
         ###############################################
         # PART 1 — NON-SYSTEM PACKAGES
@@ -198,54 +198,54 @@ service_server() {
         device_config set activity_manager max_phantom_processes 16
         device_config set activity_manager bg_start_timeout 5000
         
-      }
-      
-      uninstall_bg() {
-           apps="
-              com.facebook.katana
-              com.zhiliaoapp.musically
-              com.ss.android.ugc.trill
-              com.instagram.android
-              com.facebook.orca
-              com.snapchat.android
-              com.twitter.android
-              org.telegram.messenger
-              org.telegram.plus
-              org.thunderdog.challegram
-              com.whatsapp.w4b
-              com.ss.android.ugc.trill
-              com.openai.chatgpt
-              com.coloros.movetosdcard
-              com.google.android.apps.photos
-              com.google.android.youtube
-              com.google.android.apps.youtube.music
-              com.google.android.apps.docs
-              com.google.android.apps.maps
-              com.facebook.katana
-              com.facebook.orca
-              com.instagram.android
-              com.snapchat.android
-              com.whatsapp
-              com.zhiliaoapp.musically
-              com.ss.android.article.news
-              com.netflix.mediaclient
-              com.spotify.music
-              com.touchtype.swiftkey
-              com.google.android.as
-              com.google.android.ext.services
-              com.google.android.providers.media.module
-              com.coloros.movetosdcard
-              com.oplus.statistics.rom
-              com.coloros.smartsidebar:ui
-              com.coloros.smartsidebar:edgepanel
-              com.coloros.alarmclock:clockWidget
-              com.coloros.weather.service
-              com.oplus.romupdate
-              com.oplus.deepthinker
-              com.oplus.gesture
-              com.heytap.accessory
-              com.oplus.nas
-          "
+    }
+    
+    uninstall_bg() {
+        apps="
+            com.facebook.katana
+            com.zhiliaoapp.musically
+            com.ss.android.ugc.trill
+            com.instagram.android
+            com.facebook.orca
+            com.snapchat.android
+            com.twitter.android
+            org.telegram.messenger
+            org.telegram.plus
+            org.thunderdog.challegram
+            com.whatsapp.w4b
+            com.ss.android.ugc.trill
+            com.openai.chatgpt
+            com.coloros.movetosdcard
+            com.google.android.apps.photos
+            com.google.android.youtube
+            com.google.android.apps.youtube.music
+            com.google.android.apps.docs
+            com.google.android.apps.maps
+            com.facebook.katana
+            com.facebook.orca
+            com.instagram.android
+            com.snapchat.android
+            com.whatsapp
+            com.zhiliaoapp.musically
+            com.ss.android.article.news
+            com.netflix.mediaclient
+            com.spotify.music
+            com.touchtype.swiftkey
+            com.google.android.as
+            com.google.android.ext.services
+            com.google.android.providers.media.module
+            com.coloros.movetosdcard
+            com.oplus.statistics.rom
+            com.coloros.smartsidebar:ui
+            com.coloros.smartsidebar:edgepanel
+            com.coloros.alarmclock:clockWidget
+            com.coloros.weather.service
+            com.oplus.romupdate
+            com.oplus.deepthinker
+            com.oplus.gesture
+            com.heytap.accessory
+            com.oplus.nas
+        "
         
         ###############################################
         # UNDO — APP OPS
@@ -272,49 +272,49 @@ service_server() {
         device_config delete activity_manager max_phantom_processes
         device_config delete activity_manager bg_start_timeout
         
-      }
-      
-      notif_run() {
-          cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]")
-          cmd notification post -S bigtext -t 'LimetsU AI Engine' \
-          "noxg_engine_mode" \
-          "$cmd" \
-          >/dev/null 2>&1
-      }
-      
-      
-      notif_force() {
-          cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]")
-          cmd notification post -S bigtext -t 'LimetsU AI Engine' \
-          "noxg_engine_mode" \
-          "$cmd" \
-          >/dev/null 2>&1
-      }
-      
-      
-      notif_stop() {
-          cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]")
-          cmd notification post -S bigtext -t 'LimetsU AI Engine' \
-          "noxg_engine_mode" \
-          "$cmd" \
-          >/dev/null 2>&1
-      }
+    }
+    
+    notif_run() {
+        cmd=$(echo "Mode Status : [ Game Mode ]\ncosmic AI Engine | [Enjoy Your Game]")
+        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        "noxg_engine_mode" \
+        "$cmd" \
+        >/dev/null 2>&1
+    }
+    
+    
+    notif_force() {
+        cmd=$(echo "Mode Status : [ Game Force Mode ]\ncosmic AI Engine | [Enjoy Your Game And Battery Is Low]")
+        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        "noxg_engine_mode" \
+        "$cmd" \
+        >/dev/null 2>&1
+    }
+    
+    
+    notif_stop() {
+        cmd=$(echo "Mode Status : [ Saver Mode ]\ncosmic AI Engine | [Enjoy Efficiency Battery]")
+        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        "noxg_engine_mode" \
+        "$cmd" \
+        >/dev/null 2>&1
+    }
 
-      cache_cleaner() {
-          cmd notification post -S bigtext -t 'LimetsU AI Engine' \
-          "noxg_engine_mode" \
-          "LimetsU AI Engine Cache Cleaner - Midnight Optimization" \
-          >/dev/null 2>&1
-      
-          find /data/data/*/cache/* -delete 2>/dev/null
-          find /data/data/*/code_cache/* -delete 2>/dev/null
-          find /data/user_de/*/*/cache/* -delete 2>/dev/null
-          find /data/user_de/*/*/code_cache/* -delete 2>/dev/null
-          find /sdcard/Android/data/*/cache/* -delete 2>/dev/null
-      
-          pm trim-caches 1024G >/dev/null 2>&1
-      }
-      
+    cache_cleaner() {
+        cmd notification post -S bigtext -t 'cosmic AI Engine' \
+        "noxg_engine_mode" \
+        "cosmic AI Engine Cache Cleaner - Midnight Optimization" \
+        >/dev/null 2>&1
+    
+        find /data/data/*/cache/* -delete 2>/dev/null
+        find /data/data/*/code_cache/* -delete 2>/dev/null
+        find /data/user_de/*/*/cache/* -delete 2>/dev/null
+        find /data/user_de/*/*/code_cache/* -delete 2>/dev/null
+        find /sdcard/Android/data/*/cache/* -delete 2>/dev/null
+    
+        pm trim-caches 1024G >/dev/null 2>&1
+    }
+    
     while true; do
         GAME_LIST=$(cat /data/local/tmp/game.txt)
         timer=$(TZ="Asia/Jakarta" date +"%H:%M")
@@ -357,9 +357,9 @@ service_server() {
 
         # -------- MODE SWITCH ----------
         if [[ "$mode_now" != "$running_mode_detection" ]]; then
-          notif_state="run"
+        notif_state="run"
         else
-          notif_state="skip"
+        notif_state="skip"
         fi
         
         boost_pkg() {
@@ -388,8 +388,8 @@ service_server() {
                     notif_run
                     setprop debug.hwui.renderer skiavkthreaded
                     game_mode
-                    limetsu --driver $detected_apps
-                    limetsu --game_compiler $detected_apps
+                    cosmic --driver $detected_apps
+                    cosmic --game_compiler $detected_apps
                     install_background
                     boost_pkg $detected_apps
                     running_mode_detection="game-mode"
@@ -401,8 +401,8 @@ service_server() {
                     notif_force
                     setprop debug.hwui.renderer skiavkthreaded
                     game_mode
-                    limetsu --driver $detected_apps
-                    limetsu --game_compiler $detected_apps
+                    cosmic --driver $detected_apps
+                    cosmic --game_compiler $detected_apps
                     install_background
                     boost_pkg $detected_apps
                     running_mode_detection="force-mode"
@@ -424,13 +424,12 @@ service_server() {
                 setprop debug.hwui.renderer opengl
                 saver_mode
                 uninstall_bg
-                limetsu --cache_cleaner
+                cosmic --cache_cleaner
                 running_mode_detection="saver-mode"
             fi
         fi
         
-        limetsu --downscale
-        limetsu --dex2ot
+        cosmic --dex2ot
 
         sleep "$IDLE_TIME"
     done
