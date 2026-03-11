@@ -221,6 +221,7 @@ service_engine() {
     LOG_FILE="/data/local/tmp/cosmic.log"
     IDLE_TIME=2.5
     running_mode_detection=""
+    notif_state="run"
 
     settings put global cosmic_engine_version 1.0.0_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
@@ -255,32 +256,28 @@ service_engine() {
         timer=$(TZ="Asia/Jakarta" date +"%H:%M")
         persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
         detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
-        notif_state="run"
 
         # Enable Checking Feature
         getHavyEnable=$(settings get global cosmic_havy_apps_enable)
         temp_limit=$(settings get global cosmic_temp_limit_enable)
-        fos_hdr_disabler=$(settings get global cosmic_hdr_enable)
-        bypass_high_temp=$(settings get global cosmic_bypas_high_enable)
         fos_hdr_disabler=$(settings get global cosmic_hdr_disabler_enable)
+        bypass_high_temp=$(settings get global cosmic_bypas_high_enable)
         cos_temp_protect=$(settings get global cosmic_temp_protect_enable)
 
+        # Daily cache cleaner
         if [[ "$timer" == "00:00" ]]; then
-            # CLEANER CACHE
             cosmic --cache_cleaner >/dev/null 2>&1
 
-            # GET PAKAGE GAME
             sorted=$(echo "$GAME_LIST" | tr ',' '\n' | sort)
-
             for package in $sorted; do
                 cmd package compile -m speed -f "$package" >/dev/null 2>&1
             done
         fi
 
         # -------- MODE DETECT ----------
-        if echo "$list_game" | grep -qw "$detected_apps"; then
+        if echo "$GAME_LIST" | grep -qw "$detected_apps"; then
             gameDetected="true"
-            now_mode="game-mode"
+            mode_now="game-mode"
         else
             gameDetected="false"
             mode_now="saver-mode"
@@ -291,56 +288,40 @@ service_engine() {
             notif_state="run"
         fi
 
+        # -------- GAME MODE ----------
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
                 toast "Game Mode | High Performance" >/dev/null 2>&1
+
                 main_active_sf
                 game_mode
-                if [ "$temp_limit" = "true" ]; then
-                    settings put --user 0 system rt_enable_templimit false
-                fi
-                if [ "$bypass_high_temp" = "true" ]; then
-                    settings put --user 0 system tran_temp_battery_warning 0
-                    settings put --user 0 system tran_default_temperature_index 0
-                fi
-                if [ "$fos_hdr_disabler" = "true" ]; then
-                    settings put global user_disable_hdr_formats 1
-                fi
-                if [ "$cos_temp_protect" = "true" ]; then
-                    settings put secure oppo_high_temperature_protection_status 0
-                    settings put system oplus_settings_hightemp_protect 0
-                fi
+
+                # Additional Tweaks
+                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit false
+                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 0 && settings put --user 0 system tran_default_temperature_index 0
+                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 1
+                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 0 && settings put system oplus_settings_hightemp_protect 0
+
                 running_mode_detection="game-mode"
                 notif_state="stop"
             fi
+
+        # -------- SAVER MODE ----------
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
                 toast "Saver Mode | Efisiensi Daya" >/dev/null 2>&1
+
                 main_remove_sf
                 saver_mode
-                # RESTORE TEMP LIMIT
-                if [ "$temp_limit" = "true" ]; then
-                    settings put --user 0 system rt_enable_templimit true
-                fi
 
-                # RESTORE HIGH TEMP WARNING
-                if [ "$bypass_high_temp" = "true" ]; then
-                    settings put --user 0 system tran_temp_battery_warning 1
-                    settings put --user 0 system tran_default_temperature_index 1
-                fi
+                # Restore Settings
+                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
+                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 1 && settings put --user 0 system tran_default_temperature_index 1
+                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 0
+                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 1 && settings put system oplus_settings_hightemp_protect 1
 
-                # RESTORE HDR DISABLER
-                if [ "$fos_hdr_disabler" = "true" ]; then
-                    settings put global user_disable_hdr_formats 0
-                fi
-
-                # RESTORE OPPO/REALME HIGH TEMP PROTECTION
-                if [ "$cos_temp_protect" = "true" ]; then
-                    settings put secure oppo_high_temperature_protection_status 1
-                    settings put system oplus_settings_hightemp_protect 1
-                fi
                 running_mode_detection="saver-mode"
                 notif_state="stop"
             fi
