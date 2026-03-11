@@ -294,7 +294,7 @@ service_engine() {
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
-                toast "Game Mode | Initializer" >/dev/null 2>&1
+                toast "Game Mode | High Performance" >/dev/null 2>&1
                 main_active_sf
                 game_mode
                 if [ "$temp_limit" = "true" ]; then
@@ -311,12 +311,13 @@ service_engine() {
                     settings put secure oppo_high_temperature_protection_status 0
                     settings put system oplus_settings_hightemp_protect 0
                 fi
+                running_mode_detection="game-mode"
                 notif_state="stop"
             fi
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-                toast "Saver Mode | Initializer" >/dev/null 2>&1
+                toast "Saver Mode | Efisiensi Daya" >/dev/null 2>&1
                 main_remove_sf
                 saver_mode
                 # RESTORE TEMP LIMIT
@@ -340,6 +341,7 @@ service_engine() {
                     settings put secure oppo_high_temperature_protection_status 1
                     settings put system oplus_settings_hightemp_protect 1
                 fi
+                running_mode_detection="saver-mode"
                 notif_state="stop"
             fi
         fi
