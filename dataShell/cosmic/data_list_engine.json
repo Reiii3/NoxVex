@@ -3,12 +3,12 @@
     "id": "cosmic",
     "nama": "Cosmic AI Engine",
     "description": "AI Engine Yang Berfoku pada penngkatan performa secara siknifikan dan peningkatan optimalisasi game lebih cepat",
-    "source": ""
+    "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmic.sh"
   },
   {
     "id": "limetsu",
     "nama": "Limetsu AI Engine",
     "description": "AI Engine Yang Berfokus pada efisiensi penggunaan optimasi serta stabilitas system memungkinkan minim nya terjadi overhead",
-    "source": ""
+    "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/limetsu.sh"
   }
 ]
