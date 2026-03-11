@@ -100,6 +100,9 @@ game_mode() {
     cmd shortcut reset-all-throttling
     cmd thermalservice override-status 0
     cmd activity memory-factor set 0
+    cmd settings put global angle_gl_driver_all_angle 1
+    cmd settings put global game_driver_all_apps 1
+    cmd settings put global updatable_driver_all_apps 1
 
     # GMS
     dumpsys deviceidle whitelist -com.google.android.gms
@@ -173,6 +176,9 @@ saver_mode() {
     cmd power set-mode 1
     cmd thermalservice override-status 3
     cmd activity memory-factor set 3
+    cmd settings put global angle_gl_driver_all_angle 0
+    cmd settings put global game_driver_all_apps 0
+    cmd settings put global updatable_driver_all_apps 0
 
     # GMS RESTRICT
     dumpsys deviceidle whitelist -com.google.android.gms
@@ -229,7 +235,7 @@ service_engine() {
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
 
     notif_run() {
-        cmd=$(echo "Profile Status : [ Game Mode ]\nCosmic Pro AI Engine | Enjoy Your Game\nBeta New Generation Engine\nRunning Service : $timer")
+        cmd=$(echo "Profile Status : [ Game Mode ]\nCosmic Pro AI Engine | Enjoy Your Game\n\nBeta New Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'Cosmic Pro AI Engine' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
         "beta_new_gen" \
         "$cmd" \
@@ -237,7 +243,7 @@ service_engine() {
     }
 
     notif_stop() {
-        cmd=$(echo "Profile Status : [ Saver Mode ]\nCosmic Pro AI Engine | Enjoy Efficiency Battery\nBeta New Generation Engine\nRunning Service : $timer")
+        cmd=$(echo "Profile Status : [ Saver Mode ]\nCosmic Pro AI Engine | Efficiency Battery\n\nBeta New Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'Cosmic Pro AI Engine' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
         "beta_new_gen" \
         "$cmd" \
