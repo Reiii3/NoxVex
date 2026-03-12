@@ -298,7 +298,7 @@ service_engine() {
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
-                toast "Game Mode | High Performance" >/dev/null 2>&1
+                toast "Game Mode | Cosmic Pro" >/dev/null 2>&1
 
                 main_active_sf
                 game_mode
@@ -317,7 +317,7 @@ service_engine() {
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-                toast "Saver Mode | Efisiensi Daya" >/dev/null 2>&1
+                toast "Saver Mode | Cosmic Pro" >/dev/null 2>&1
 
                 main_remove_sf
                 saver_mode
