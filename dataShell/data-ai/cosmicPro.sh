@@ -78,13 +78,6 @@ game_mode() {
     # SETPROP
     setprop debug.hwui.renderer skiavk
     setprop debug.renderengine.backend skiavkthreaded
-    settings put global power_check_max_cpu_1 310
-    settings put global power_check_max_cpu_2 370
-    settings put global power_check_max_cpu_3 140
-    settings put global power_check_max_cpu_4 170
-    setprop debug.hwui.target_power_time_percent 210
-    setprop debug.hwui.target_cpu_time_percent 210
-    setprop debug.hwui.target_gpu_time_percent 210
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
@@ -147,6 +140,60 @@ game_mode() {
     fi
 }
 
+balance_mode() {
+    # PROFILE STATUS
+    settings put global cosmic_profile_enable Balance-Mode
+
+    # SETPROP (lebih ringan)
+    setprop debug.hwui.renderer skiavk
+    setprop debug.renderengine.backend skiavk
+    setprop debug.sf.hw 1
+    setprop debug.egl.hw 1
+    setprop debug.hwui.trace_gpu_resources false
+    setprop debug.performance.tuning 1
+
+    # CMD (aman & stabil)
+    cmd power set-fixed-performance-mode-enabled false
+    cmd settings put system air_motion_engine 0
+    cmd settings put system master_motion 0
+
+    # GPU Driver (aman)
+    cmd settings put global angle_gl_driver_all_angle 1
+    cmd settings put global game_driver_all_apps 1
+    cmd settings put global updatable_driver_all_apps 1
+
+    # THERMAL (tidak penuh bypass, hanya stabil)
+    cmd thermalservice override-status 1
+
+    # MEMORY FACTOR (medium)
+    cmd activity memory-factor set 1
+
+    # GMS (TIDAK di-disable, hanya sedikit dikurangi)
+    appops set com.google.android.gms WAKE_LOCK allow
+    appops set com.google.android.gms RUN_IN_BACKGROUND allow
+    settings put global enable_google_services 1
+    settings put global backup_enabled 1
+
+    # FEATURE LAIN (jika user aktifkan)
+    if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
+        settings put --user 0 system performance_mode_enable 1
+        settings put system power_mode balanced
+        cmd settings put system POWER_BALANCED_MODE_OPEN 1
+        cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
+        cmd settings put system POWER_SAVE_MODE_OPEN 0
+    fi
+
+    if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
+        # adaptive ON untuk hemat baterai
+        settings put global adaptive_battery_management_enabled 1
+        cmd power set-adaptive-power-saver-enabled true
+    fi
+
+    if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
+        settings put global zen_mode 1
+    fi
+}
+
 saver_mode() {
     # SET PROFILE STATUS
     settings put global cosmic_profile_enable Saver-Mode
@@ -154,13 +201,6 @@ saver_mode() {
     # SETPROP (LOW POWER)
     setprop debug.hwui.renderer skiagl
     setprop debug.renderengine.backend skiaglthreaded
-    settings put global power_check_max_cpu_1 120
-    settings put global power_check_max_cpu_2 150
-    settings put global power_check_max_cpu_3 90
-    settings put global power_check_max_cpu_4 110
-    setprop debug.hwui.target_power_time_percent 120
-    setprop debug.hwui.target_cpu_time_percent 120
-    setprop debug.hwui.target_gpu_time_percent 120
     setprop debug.egl.hw 0
     setprop debug.sf.hw 0
     setprop debug.hwui.trace_gpu_resources false
@@ -298,10 +338,18 @@ service_engine() {
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
-                toast "Game Mode | High Performance" >/dev/null 2>&1
 
                 main_active_sf
-                game_mode
+                if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
+                    toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    saver_mode
+                elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
+                    toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    balance_mode
+                elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
+                    toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    game_mode
+                fi
 
                 # Additional Tweaks
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit false
@@ -317,10 +365,19 @@ service_engine() {
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-                toast "Saver Mode | Efisiensi Daya" >/dev/null 2>&1
+                toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
 
                 main_remove_sf
-                saver_mode
+                if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
+                    toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    saver_mode
+                elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
+                    toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    balance_mode
+                elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
+                    toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    game_mode
+                fi
 
                 # Restore Settings
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
