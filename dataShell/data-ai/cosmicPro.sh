@@ -338,10 +338,6 @@ service_engine() {
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
-<<<<<<< HEAD
-=======
-                toast "Game Mode | Cosmic Pro" >/dev/null 2>&1
->>>>>>> 53b5f485455c4251b5da3bb3bd73b312dfeb06ef
 
                 main_active_sf
                 if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
@@ -369,12 +365,7 @@ service_engine() {
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-<<<<<<< HEAD
-                toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
-=======
-                toast "Saver Mode | Cosmic Pro" >/dev/null 2>&1
->>>>>>> 53b5f485455c4251b5da3bb3bd73b312dfeb06ef
-
+                
                 main_remove_sf
                 if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
                     toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
