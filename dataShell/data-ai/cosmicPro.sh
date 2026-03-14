@@ -81,6 +81,8 @@ game_mode() {
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
+    setprop debug.cpurend.vsync false
+    setprop debug.gpurend.vsync false
     setprop debug.egl.force_msaa false
     setprop debug.performance.tuning 1
     setprop debug.composition.type mdp
