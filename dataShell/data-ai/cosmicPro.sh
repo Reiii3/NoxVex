@@ -261,6 +261,50 @@ saver_mode() {
     fi
 }
 
+boost_pkg() {
+  pkg=$1
+  PID=$(pidof $pkg)
+
+  if [ -z "$PID" ]; then
+      PID=$(ps -A | grep -w $pkg | head -n1 | awk '{print $2}')
+  fi
+
+  if [ -n "$PID" ]; then
+      echo "[+] Boosting $pkg (PID: $PID)"
+      taskset -p ff $PID >/dev/null 2>&1
+      renice -n -20 -p $PID >/dev/null 2>&1
+      echo "[+] Done"
+  else
+      echo "[!] PID not found → App tidak berjalan"
+  fi
+}
+
+havy_force_stopped() {
+    apps="
+        com.facebook.katana
+        com.zhiliaoapp.musically
+        com.ss.android.ugc.trill
+        com.instagram.android
+        com.facebook.orca
+        com.snapchat.android
+        com.twitter.android
+        org.telegram.messenger
+        org.telegram.plus
+        org.thunderdog.challegram
+        com.whatsapp
+        com.whatsapp.w4b
+        com.openai.chatgpt
+    "
+
+    installed=$(pm list packages)
+
+    for a in $apps; do
+        echo "$installed" | grep -q "$a" || continue
+        am force-stop "$a" >/dev/null 2>&1
+        am kill "$a" >/dev/null 2>&1
+        cmd dropbox add-low-priority "$a"
+    done
+}
 
 # ENGINE SERVICE
 service_engine() {
@@ -340,6 +384,7 @@ service_engine() {
                 notif_run
 
                 main_active_sf
+                boost_pkg $detected_apps
                 if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
                     toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
                     saver_mode
@@ -356,6 +401,7 @@ service_engine() {
                 [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 0 && settings put --user 0 system tran_default_temperature_index 0
                 [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 1
                 [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 0 && settings put system oplus_settings_hightemp_protect 0
+                [ $getHavyEnable == "true" ] && havy_force_stopped
 
                 running_mode_detection="game-mode"
                 notif_state="stop"
@@ -368,13 +414,13 @@ service_engine() {
                 
                 main_remove_sf
                 if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
-                    toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
                     saver_mode
                 elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
-                    toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
                     balance_mode
                 elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
-                    toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
                 fi
 
