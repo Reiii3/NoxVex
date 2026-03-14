@@ -435,6 +435,7 @@ service_engine() {
                 running_mode_detection="saver-mode"
                 notif_state="stop"
             fi
+            cosmic --downscale
         fi
 
         sleep "$IDLE_TIME"
