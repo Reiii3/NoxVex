@@ -176,9 +176,6 @@ service_server() {
             com.google.android.providers.media.module
             com.coloros.movetosdcard
             com.oplus.statistics.rom
-            com.coloros.smartsidebar:ui
-            com.coloros.smartsidebar:edgepanel
-            com.coloros.alarmclock:clockWidget
             com.coloros.weather.service
             com.oplus.romupdate
             com.oplus.deepthinker
@@ -265,9 +262,6 @@ service_server() {
             com.google.android.providers.media.module
             com.coloros.movetosdcard
             com.oplus.statistics.rom
-            com.coloros.smartsidebar:ui
-            com.coloros.smartsidebar:edgepanel
-            com.coloros.alarmclock:clockWidget
             com.coloros.weather.service
             com.oplus.romupdate
             com.oplus.deepthinker
