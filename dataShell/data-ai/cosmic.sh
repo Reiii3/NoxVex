@@ -440,7 +440,6 @@ service_server() {
                     game_mode
                     cosmic --driver $detected_apps
                     cosmic --game_compiler
-                    boost_pkg $detected_apps
                     running_mode_detection="game-mode"
                     notif_state="stop"
                     if [ "$temp_limit" = "true" ]; then
@@ -470,7 +469,6 @@ service_server() {
                     game_mode
                     cosmic --driver $detected_apps
                     cosmic --game_compiler
-                    boost_pkg $detected_apps
                     running_mode_detection="force-mode"
                     notif_state="stop"
                     if [ "$temp_limit" = "true" ]; then
