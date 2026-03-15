@@ -259,7 +259,7 @@ saver_mode() {
     fi
 
     if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
-        settings put global zen_mode 1
+        settings put global zen_mode 0
     fi
 }
 
