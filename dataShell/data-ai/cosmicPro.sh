@@ -263,24 +263,6 @@ saver_mode() {
     fi
 }
 
-boost_pkg() {
-  pkg=$1
-  PID=$(pidof $pkg)
-
-  if [ -z "$PID" ]; then
-      PID=$(ps -A | grep -w $pkg | head -n1 | awk '{print $2}')
-  fi
-
-  if [ -n "$PID" ]; then
-      echo "[+] Boosting $pkg (PID: $PID)"
-      taskset -p ff $PID >/dev/null 2>&1
-      renice -n -20 -p $PID >/dev/null 2>&1
-      echo "[+] Done"
-  else
-      echo "[!] PID not found → App tidak berjalan"
-  fi
-}
-
 havy_force_stopped() {
     apps="
         com.facebook.katana
@@ -386,7 +368,6 @@ service_engine() {
                 notif_run
 
                 main_active_sf
-                boost_pkg $detected_apps
                 if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
                     toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
                     saver_mode
