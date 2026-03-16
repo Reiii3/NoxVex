@@ -176,6 +176,11 @@ balance_mode() {
     settings put global enable_google_services 1
     settings put global backup_enabled 1
 
+    if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
+        cmd settings put system high_performance_mode_on 0
+        cmd settings put system high_performance_mode_on_when_shutdown 0
+    fi
+
     # FEATURE LAIN (jika user aktifkan)
     if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
         settings put --user 0 system performance_mode_enable 1
