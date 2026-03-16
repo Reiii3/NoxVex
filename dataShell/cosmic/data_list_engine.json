@@ -1,18 +1,21 @@
 [
   {
     "id": "cosmic",
+    "version": "1.1.5",
     "nama": "Cosmic AI Engine",
     "description": "AI Engine Yang Berfoku pada penngkatan performa secara siknifikan dan peningkatan optimalisasi game lebih cepat",
     "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmic.sh"
   },
   {
     "id": "cosmicPro",
+    "version": "1.0.0",
     "nama": "Cosmic Pro AI Engine",
     "description": "AI Engine Cosmic Pro Ini Merupakan Re-Builder Dari Engine terdahulu nya Dengan Ini Engine Ini Telah di kalibrasi ulang, (BETA)",
     "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmicPro.sh"
   },
   {
     "id": "limetsu",
+    "version": "1.0.5",
     "nama": "Limetsu AI Engine",
     "description": "AI Engine Yang Berfokus pada efisiensi penggunaan optimasi serta stabilitas system memungkinkan minim nya terjadi overhead",
     "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/limetsu.sh"
