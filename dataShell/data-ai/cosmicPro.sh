@@ -331,6 +331,7 @@ service_engine() {
     # MAIN CORE
     while true; do
         # Basic Resource
+        new_status=$(wget --no-check-certificate -q -O - "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/cosmic/triger-update/cosmic-triger")
         GAME_LIST=$(cat /data/local/tmp/game.txt)
         timer=$(TZ="Asia/Jakarta" date +"%H:%M")
         persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
