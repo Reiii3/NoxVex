@@ -374,8 +374,11 @@ service_engine() {
                 notif_run
 
                 if [[ "$new_status" != $(settings get global cosmic_engine_version)]]; then
-
-        fi
+                   cmd=$("Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
+                   cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \  "beta_new_gen" \
+                   "$cmd" \
+        >/dev/null 2>&1
+                fi
 
                 main_active_sf
                 if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
@@ -404,7 +407,12 @@ service_engine() {
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-                
+                if [[ "$new_status" != $(settings get global cosmic_engine_version)]]; then
+                   cmd=$("Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
+                   cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \  "beta_new_gen" \
+                   "$cmd" \
+        >/dev/null 2>&1
+                fi
                 main_remove_sf
                 if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
                     toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
