@@ -344,6 +344,10 @@ service_engine() {
         bypass_high_temp=$(settings get global cosmic_bypas_high_enable)
         cos_temp_protect=$(settings get global cosmic_temp_protect_enable)
 
+        if [[ "$new_status" != $(settings get global cosmic_engine_version)]]; then
+
+        fi
+
         # Daily cache cleaner
         if [[ "$timer" == "00:00" ]]; then
             cosmic --cache_cleaner >/dev/null 2>&1
