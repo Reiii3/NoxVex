@@ -411,7 +411,7 @@ service_engine() {
                    cmd=$(echo "Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
                    cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \  "beta_new_gen" \
                    "$cmd" \
-        >/dev/null 2>&1
+                   >/dev/null 2>&1
                 fi
                 main_remove_sf
                 if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
