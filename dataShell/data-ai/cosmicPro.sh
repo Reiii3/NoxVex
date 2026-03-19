@@ -100,17 +100,19 @@ game_mode() {
     cmd settings put global updatable_driver_all_apps 1
 
     # GMS
-    dumpsys deviceidle whitelist -com.google.android.gms
-    appops set com.google.android.gms WAKE_LOCK ignore
-    appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-    appops set com.google.android.gms WAKEUP_ALARM ignore
-    settings put global enable_google_services 0
-    settings put global gs_location_enabled 0
-    settings put global backup_enabled 0
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
-
+    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
+      dumpsys deviceidle whitelist -com.google.android.gms
+      appops set com.google.android.gms WAKE_LOCK ignore
+      appops set com.google.android.gms RUN_IN_BACKGROUND ignore
+      appops set com.google.android.gms WAKEUP_ALARM ignore
+      settings put global enable_google_services 0
+      settings put global gs_location_enabled 0
+      settings put global backup_enabled 0
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+    fi
+    
     # OTHER OPTIMIZER FEATURE ON WEBUI  
     if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
         cmd settings put system high_performance_mode_on 1
@@ -171,10 +173,12 @@ balance_mode() {
     cmd activity memory-factor set 1
 
     # GMS (TIDAK di-disable, hanya sedikit dikurangi)
-    appops set com.google.android.gms WAKE_LOCK allow
-    appops set com.google.android.gms RUN_IN_BACKGROUND allow
-    settings put global enable_google_services 1
-    settings put global backup_enabled 1
+    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
+      appops set com.google.android.gms WAKE_LOCK allow
+      appops set com.google.android.gms RUN_IN_BACKGROUND allow
+      settings put global enable_google_services 1
+      settings put global backup_enabled 1
+    fi
 
     if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
         cmd settings put system high_performance_mode_on 0
@@ -228,17 +232,19 @@ saver_mode() {
     cmd settings put global updatable_driver_all_apps 0
 
     # GMS RESTRICT
-    dumpsys deviceidle whitelist -com.google.android.gms
-    appops set com.google.android.gms WAKE_LOCK ignore
-    appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-    appops set com.google.android.gms WAKEUP_ALARM ignore
-    settings put global enable_google_services 0
-    settings put global gs_location_enabled 0
-    settings put global backup_enabled 0
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
-
+    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
+      dumpsys deviceidle whitelist -com.google.android.gms
+      appops set com.google.android.gms WAKE_LOCK ignore
+      appops set com.google.android.gms RUN_IN_BACKGROUND ignore
+      appops set com.google.android.gms WAKEUP_ALARM ignore
+      settings put global enable_google_services 0
+      settings put global gs_location_enabled 0
+      settings put global backup_enabled 0
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
+      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+    if
+    
     # OPTIMIZER (MATCHING WEBUI)
     if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
         cmd settings put system high_performance_mode_on 0
@@ -302,7 +308,7 @@ service_engine() {
     running_mode_detection=""
     notif_state="run"
 
-    settings put global cosmic_engine_version 1.0.1_BETA
+    settings put global cosmic_engine_version 1.0.2_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
