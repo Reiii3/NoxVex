@@ -243,7 +243,7 @@ saver_mode() {
       pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
       pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
       pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
-    if
+    fi
     
     # OPTIMIZER (MATCHING WEBUI)
     if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
