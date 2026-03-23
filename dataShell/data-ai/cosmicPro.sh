@@ -308,7 +308,7 @@ service_engine() {
     running_mode_detection=""
     notif_state="run"
 
-    settings put global cosmic_engine_version 1.0.2_BETA
+    settings put global cosmic_engine_version 1.0.3_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
@@ -432,6 +432,8 @@ service_engine() {
                     toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
                 fi
+                setprop debug.hwui.renderer skiagl
+                setprop debug.renderengine.backend skiagl
 
                 # Restore Settings
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
