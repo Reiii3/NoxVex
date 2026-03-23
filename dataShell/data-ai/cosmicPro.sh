@@ -434,6 +434,9 @@ service_engine() {
                 fi
                 setprop debug.hwui.renderer skiagl
                 setprop debug.renderengine.backend skiagl
+                if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
+                   settings put global zen_mode 0
+                fi 
 
                 # Restore Settings
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
