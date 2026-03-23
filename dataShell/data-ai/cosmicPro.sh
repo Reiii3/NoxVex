@@ -308,7 +308,7 @@ service_engine() {
     running_mode_detection=""
     notif_state="run"
 
-    settings put global cosmic_engine_version 1.0.3_BETA
+    settings put global cosmic_engine_version 1.0.4_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
