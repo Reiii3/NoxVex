@@ -98,6 +98,16 @@ game_mode() {
     cmd settings put global angle_gl_driver_all_angle 1
     cmd settings put global game_driver_all_apps 1
     cmd settings put global updatable_driver_all_apps 1
+ 
+    # PERFORMANCE DEVICE CONFIG
+    cmd device_config put activity_manager max_cached_processes 65535
+    cmd device_config put activity_manager max_phantom_processes 65535
+    cmd device_config put activity_manager max_empty_time_millis 180000
+    cmd device_config put activity_manager bg_fgs_monitor_enabled false
+    cmd device_config put activity_manager bg_current_drain_auto_restrict_abusive_apps_enabled false
+    cmd device_config put activity_manager bg_media_session_monitor_enabled false
+    cmd device_config put activity_manager bg_permission_monitor_enabled false
+    cmd device_config put activity_manager_native_boot modern_queue_enabled true
 
     # GMS
     if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
@@ -171,6 +181,14 @@ balance_mode() {
 
     # MEMORY FACTOR (medium)
     cmd activity memory-factor set 1
+
+    # BALANCE DEVICE CONFIG
+    cmd device_config put activity_manager max_cached_processes 4096
+    cmd device_config put activity_manager max_phantom_processes 4096
+    cmd device_config put activity_manager max_empty_time_millis 120000
+    cmd device_config put activity_manager bg_fgs_monitor_enabled true
+    cmd device_config put activity_manager bg_broadcast_monitor_enabled true
+    cmd device_config put activity_manager_native_boot modern_queue_enabled true
 
     # GMS (TIDAK di-disable, hanya sedikit dikurangi)
     if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
@@ -308,7 +326,7 @@ service_engine() {
     running_mode_detection=""
     notif_state="run"
 
-    settings put global cosmic_engine_version 1.0.4_BETA
+    settings put global cosmic_engine_version 1.0.5_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
