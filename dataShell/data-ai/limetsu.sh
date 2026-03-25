@@ -28,13 +28,6 @@ service_server() {
         setprop debug.egl.hw 1
         setprop debug.sf.set_idle_timer_ms 0
         
-        settings put global power_check_max_cpu_1 310
-        settings put global power_check_max_cpu_2 370
-        settings put global power_check_max_cpu_3 140
-        settings put global power_check_max_cpu_4 170
-        setprop debug.hwui.target_power_time_percent 210
-        setprop debug.hwui.target_cpu_time_percent 210
-        setprop debug.hwui.target_gpu_time_percent 210
         cmd power set-fixed-performance-mode-enabled true
         cmd power set-adaptive-power-saver-enabled false
         cmd power set-mode 0
@@ -59,9 +52,7 @@ service_server() {
         
         # CPU Reducer
         settings put global battery_saver_adaptive_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-
         settings put global battery_saver_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-        
         settings put global battery_saver_device_specific_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
     
         # Oppo Battery High Performance
@@ -80,13 +71,6 @@ service_server() {
         dumpsys deviceidle whitelist +com.google.android.gms
         setprop debug.composition.type c2d
         
-        settings put global power_check_max_cpu_1 150
-        settings put global power_check_max_cpu_2 210
-        settings put global power_check_max_cpu_3 90
-        settings put global power_check_max_cpu_4 90
-        setprop debug.hwui.target_power_time_percent 200
-        setprop debug.hwui.target_cpu_time_percent 200
-        setprop debug.hwui.target_gpu_time_percent 200
         cmd power set-fixed-performance-mode-enabled true
         cmd power set-adaptive-power-saver-enabled false
         cmd power set-mode 0
