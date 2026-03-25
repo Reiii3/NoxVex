@@ -265,20 +265,20 @@ saver_mode() {
     
     # OPTIMIZER (MATCHING WEBUI)
     if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-        cmd settings put system high_performance_mode_on 0
-        cmd settings put system high_performance_mode_on_when_shutdown 0
+       cmd settings put system high_performance_mode_on 0
+       cmd settings put system high_performance_mode_on_when_shutdown 0
     fi
 
     if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
-        settings put --user 0 system performance_mode_enable 0
-        settings put system power_save_type_performance 1
-        settings put system power_mode low
-        cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
-        cmd settings put system POWER_BALANCED_MODE_OPEN 1
-        cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
-        cmd settings put system POWER_SAVE_MODE_OPEN 1
-        cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
-        cmd settings put system speed_mode 0
+      settings put --user 0 system performance_mode_enable 0
+      settings put system power_save_type_performance 1
+      settings put system power_mode low
+      cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
+      cmd settings put system POWER_BALANCED_MODE_OPEN 1
+      cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
+      cmd settings put system POWER_SAVE_MODE_OPEN 1
+      cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
+      cmd settings put system speed_mode 0
     fi
 
     if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
