@@ -108,50 +108,6 @@ game_mode() {
     cmd device_config put activity_manager bg_media_session_monitor_enabled false
     cmd device_config put activity_manager bg_permission_monitor_enabled false
     cmd device_config put activity_manager_native_boot modern_queue_enabled true
-
-    # GMS
-    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
-      dumpsys deviceidle whitelist -com.google.android.gms
-      appops set com.google.android.gms WAKE_LOCK ignore
-      appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-      appops set com.google.android.gms WAKEUP_ALARM ignore
-      settings put global enable_google_services 0
-      settings put global gs_location_enabled 0
-      settings put global backup_enabled 0
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
-    fi
-    
-    # OTHER OPTIMIZER FEATURE ON WEBUI  
-    if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-        cmd settings put system high_performance_mode_on 1
-        cmd settings put system high_performance_mode_on_when_shutdown 1
-    fi
-    
-    if [ $(settings get global cosmic_perf_opt_enable) = "true" ]; then
-        settings put --user 0 system performance_mode_enable 1
-        settings put system power_save_type_performance 0
-        settings put system power_mode high
-        cmd settings put global security_center_pc_save_mode_data '{"a":0,"b":-1,"c":-1,"d":-1}'
-        cmd settings put system POWER_BALANCED_MODE_OPEN 0
-        cmd settings put system POWER_PERFORMANCE_MODE_OPEN 1
-        cmd settings put system POWER_SAVE_MODE_OPEN 0
-        cmd settings put system POWER_SAVE_PRE_HIDE_MODE performance
-        cmd settings put system speed_mode 1
-    fi
-    
-    if [ $(settings get global cosmic_adaptive_power_enable) == "true" ]; then
-        settings put global adaptive_battery_management_enabled 0 >/dev/null 2>&1
-        settings put global reduce_motion 1
-        cmd power set-adaptive-power-saver-enabled false
-        cmd power set-mode 0
-        cmd deviceidle pre-idle-factor 0
-    fi
-    
-    if [ $(settings get global cosmic_dnd_enable) == "true" ]; then
-        settings put global zen_mode 1
-    fi
 }
 
 balance_mode() {
@@ -189,38 +145,6 @@ balance_mode() {
     cmd device_config put activity_manager bg_fgs_monitor_enabled true
     cmd device_config put activity_manager bg_broadcast_monitor_enabled true
     cmd device_config put activity_manager_native_boot modern_queue_enabled true
-
-    # GMS (TIDAK di-disable, hanya sedikit dikurangi)
-    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
-      appops set com.google.android.gms WAKE_LOCK allow
-      appops set com.google.android.gms RUN_IN_BACKGROUND allow
-      settings put global enable_google_services 1
-      settings put global backup_enabled 1
-    fi
-
-    if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-        cmd settings put system high_performance_mode_on 0
-        cmd settings put system high_performance_mode_on_when_shutdown 0
-    fi
-
-    # FEATURE LAIN (jika user aktifkan)
-    if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
-        settings put --user 0 system performance_mode_enable 1
-        settings put system power_mode balanced
-        cmd settings put system POWER_BALANCED_MODE_OPEN 1
-        cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
-        cmd settings put system POWER_SAVE_MODE_OPEN 0
-    fi
-
-    if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
-        # adaptive ON untuk hemat baterai
-        settings put global adaptive_battery_management_enabled 1
-        cmd power set-adaptive-power-saver-enabled true
-    fi
-
-    if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
-        settings put global zen_mode 1
-    fi
 }
 
 saver_mode() {
@@ -248,48 +172,6 @@ saver_mode() {
     cmd settings put global angle_gl_driver_all_angle 0
     cmd settings put global game_driver_all_apps 0
     cmd settings put global updatable_driver_all_apps 0
-
-    # GMS RESTRICT
-    if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
-      dumpsys deviceidle whitelist -com.google.android.gms
-      appops set com.google.android.gms WAKE_LOCK ignore
-      appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-      appops set com.google.android.gms WAKEUP_ALARM ignore
-      settings put global enable_google_services 0
-      settings put global gs_location_enabled 0
-      settings put global backup_enabled 0
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-      pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
-    fi
-    
-    # OPTIMIZER (MATCHING WEBUI)
-    if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-       cmd settings put system high_performance_mode_on 0
-       cmd settings put system high_performance_mode_on_when_shutdown 0
-    fi
-
-    if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
-      settings put --user 0 system performance_mode_enable 0
-      settings put system power_save_type_performance 1
-      settings put system power_mode low
-      cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
-      cmd settings put system POWER_BALANCED_MODE_OPEN 1
-      cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
-      cmd settings put system POWER_SAVE_MODE_OPEN 1
-      cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
-      cmd settings put system speed_mode 0
-    fi
-
-    if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
-       settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
-       settings put global reduce_motion 1
-       cmd deviceidle pre-idle-factor 6
-    fi
-
-    if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
-       settings put global zen_mode 0
-    fi
 }
 
 havy_force_stopped() {
@@ -416,6 +298,50 @@ service_engine() {
                     toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
                 fi
+                
+                # GMS
+                if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
+                  dumpsys deviceidle whitelist -com.google.android.gms
+                  appops set com.google.android.gms WAKE_LOCK ignore
+                  appops set com.google.android.gms RUN_IN_BACKGROUND ignore
+                  appops set com.google.android.gms WAKEUP_ALARM ignore
+                  settings put global enable_google_services 0
+                  settings put global gs_location_enabled 0
+                  settings put global backup_enabled 0
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+                fi
+                
+                # OTHER OPTIMIZER FEATURE ON WEBUI  
+                if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
+                    cmd settings put system high_performance_mode_on 1
+                    cmd settings put system high_performance_mode_on_when_shutdown 1
+                fi
+                
+                if [ $(settings get global cosmic_perf_opt_enable) = "true" ]; then
+                    settings put --user 0 system performance_mode_enable 1
+                    settings put system power_save_type_performance 0
+                    settings put system power_mode high
+                    cmd settings put global security_center_pc_save_mode_data '{"a":0,"b":-1,"c":-1,"d":-1}'
+                    cmd settings put system POWER_BALANCED_MODE_OPEN 0
+                    cmd settings put system POWER_PERFORMANCE_MODE_OPEN 1
+                    cmd settings put system POWER_SAVE_MODE_OPEN 0
+                    cmd settings put system POWER_SAVE_PRE_HIDE_MODE performance
+                    cmd settings put system speed_mode 1
+                fi
+                
+                if [ $(settings get global cosmic_adaptive_power_enable) == "true" ]; then
+                    settings put global adaptive_battery_management_enabled 0 >/dev/null 2>&1
+                    settings put global reduce_motion 1
+                    cmd power set-adaptive-power-saver-enabled false
+                    cmd power set-mode 0
+                    cmd deviceidle pre-idle-factor 0
+                fi
+                
+                if [ $(settings get global cosmic_dnd_enable) == "true" ]; then
+                    settings put global zen_mode 1
+                fi
 
                 # Additional Tweaks
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit false
@@ -450,12 +376,51 @@ service_engine() {
                     toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
                 fi
+                
                 setprop debug.hwui.renderer skiagl
                 setprop debug.renderengine.backend skiagl
+                
+                if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
+                  dumpsys deviceidle whitelist -com.google.android.gms
+                  appops set com.google.android.gms WAKE_LOCK ignore
+                  appops set com.google.android.gms RUN_IN_BACKGROUND ignore
+                  appops set com.google.android.gms WAKEUP_ALARM ignore
+                  settings put global enable_google_services 0
+                  settings put global gs_location_enabled 0
+                  settings put global backup_enabled 0
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
+                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+                fi
+                
+                # OPTIMIZER (MATCHING WEBUI)
+                if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
+                   cmd settings put system high_performance_mode_on 0
+                   cmd settings put system high_performance_mode_on_when_shutdown 0
+                fi
+            
+                if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
+                  settings put --user 0 system performance_mode_enable 0
+                  settings put system power_save_type_performance 1
+                  settings put system power_mode low
+                  cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
+                  cmd settings put system POWER_BALANCED_MODE_OPEN 1
+                  cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
+                  cmd settings put system POWER_SAVE_MODE_OPEN 1
+                  cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
+                  cmd settings put system speed_mode 0
+                fi
+            
+                if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
+                   settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
+                   settings put global reduce_motion 1
+                   cmd deviceidle pre-idle-factor 6
+                fi
+            
                 if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
                    settings put global zen_mode 0
-                fi 
-
+                fi
+                
                 # Restore Settings
                 [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
                 [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 1 && settings put --user 0 system tran_default_temperature_index 1
