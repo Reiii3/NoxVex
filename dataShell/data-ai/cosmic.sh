@@ -29,13 +29,6 @@ service_server() {
         setprop debug.composition.type mdp
         cmd activity memory-factor set 0
         
-        settings put global power_check_max_cpu_1 310
-        settings put global power_check_max_cpu_2 370
-        settings put global power_check_max_cpu_3 140
-        settings put global power_check_max_cpu_4 170
-        setprop debug.hwui.target_power_time_percent 210
-        setprop debug.hwui.target_cpu_time_percent 210
-        setprop debug.hwui.target_gpu_time_percent 210
         cmd power set-mode 0
         cmd thermalservice override-status 0
         setprop debug.egl.hw 1
@@ -49,9 +42,7 @@ service_server() {
         cmd shortcut reset-all-throttling
         
         settings put global battery_saver_adaptive_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-
         settings put global battery_saver_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
-        
         settings put global battery_saver_device_specific_constants advertise_is_enabled=false,enable_datasaver=true,disable_launch_boost=false,disable_vibration=true,disable_animation=true,disable_soundtrigger=true,location_mode=2,gps_mode=2,enable_brightness_adjustment=false,force_all_apps_standby=false,force_background_check=true,disable_optional_sensors=true,enable_quick_doze=true
     
         # Oppo Battery High Performance
@@ -95,13 +86,6 @@ service_server() {
         dumpsys deviceidle whitelist +com.google.android.gms
         setprop debug.composition.type c2d
         
-        settings put global power_check_max_cpu_1 110
-        settings put global power_check_max_cpu_2 170
-        settings put global power_check_max_cpu_3 110
-        settings put global power_check_max_cpu_4 120
-        setprop debug.hwui.target_power_time_percent 110
-        setprop debug.hwui.target_cpu_time_percent 90
-        setprop debug.hwui.target_gpu_time_percent 80
         cmd power set-mode 1
         cmd thermalservice override-status 1
         setprop debug.egl.hw 0
@@ -294,7 +278,6 @@ service_server() {
         device_config delete activity_manager max_cached_processes
         device_config delete activity_manager max_phantom_processes
         device_config delete activity_manager bg_start_timeout
-        
     }
     
     notif_run() {
