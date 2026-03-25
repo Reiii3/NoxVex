@@ -282,13 +282,13 @@ saver_mode() {
     fi
 
     if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
-        settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
-        settings put global reduce_motion 1
-        cmd deviceidle pre-idle-factor 6
+       settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
+       settings put global reduce_motion 1
+       cmd deviceidle pre-idle-factor 6
     fi
 
     if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
-        settings put global zen_mode 0
+       settings put global zen_mode 0
     fi
 }
 
