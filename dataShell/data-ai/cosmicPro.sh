@@ -265,13 +265,15 @@ service_engine() {
         if echo "$GAME_LIST" | grep -qw "$detected_apps"; then
             gameDetected="true"
             mode_now="game-mode"
+            if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
+               notif_state="run"
+            fi
         else
             gameDetected="false"
             mode_now="saver-mode"
-        fi
-        
-        if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
-           notif_state="run"
+            if [[ $(settings get global cosmic_daily_mode) != "$profile_detection" ]]; then
+               notif_state="run"
+            fi
         fi
 
         # -------- MODE SWITCH ----------
