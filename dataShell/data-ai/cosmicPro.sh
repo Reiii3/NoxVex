@@ -87,6 +87,12 @@ game_mode() {
     setprop debug.performance.tuning 1
     setprop debug.composition.type mdp
 
+    # CPU Cluster
+    setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+    setprop debug.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
+    setprop debug.powehint.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
+    setprop debug.powehint.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
+
     # CMD
     cmd power set-fixed-performance-mode-enabled true
     cmd settings put system air_motion_engine 0
@@ -208,8 +214,10 @@ service_engine() {
     running_mode_detection=""
     profile_detection=""
     notif_state="run"
+    notif_update_state="stop"
+    profile_state="run"
 
-    settings put global cosmic_engine_version 1.0.6_BETA
+    settings put global cosmic_engine_version 1.0.8_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
@@ -266,69 +274,56 @@ service_engine() {
             gameDetected="true"
             mode_now="game-mode"
             if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
-               notif_state="run"
+                notif_state="run"
+                profile_state="run"
             fi
         else
             gameDetected="false"
             mode_now="saver-mode"
             if [[ $(settings get global cosmic_daily_mode) != "$profile_detection" ]]; then
-               notif_state="run"
+                notif_state="run"
+                profile_state="run"
             fi
         fi
 
         # -------- MODE SWITCH ----------
         if [[ "$mode_now" != "$running_mode_detection" ]]; then
             notif_state="run"
+            profile_state="run"
         fi
         
-        
+        if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+            notif_update_state="run"
+        fi
 
         # -------- GAME MODE ----------
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
 
-                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
-                   cmd=$(echo "Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
-                   cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
-                   "beta_new_gen" \
-                   "$cmd" \
-                   >/dev/null 2>&1
-                fi
-
                 main_active_sf
-                if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
-                    toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
-                    saver_mode
-                    profile_detection="1"
-                elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
-                    toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
-                    balance_mode
-                    profile_detection="2"
-                elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
-                    toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
-                    game_mode
-                    profile_detection="3"
-                fi
+                echo "[DEBUG] Dynamic SurfaceFlinger Actived"
                 
                 # GMS
                 if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
-                  dumpsys deviceidle whitelist -com.google.android.gms
-                  appops set com.google.android.gms WAKE_LOCK ignore
-                  appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-                  appops set com.google.android.gms WAKEUP_ALARM ignore
-                  settings put global enable_google_services 0
-                  settings put global gs_location_enabled 0
-                  settings put global backup_enabled 0
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+                    dumpsys deviceidle whitelist -com.google.android.gms
+                    appops set com.google.android.gms WAKE_LOCK ignore >/dev/null 2>&1
+                    appops set com.google.android.gms RUN_IN_BACKGROUND ignore >/dev/null 2>&1
+                    appops set com.google.android.gms WAKEUP_ALARM ignore >/dev/null 2>&1
+                    settings put global enable_google_services 0 >/dev/null 2>&1
+                    settings put global gs_location_enabled 0 >/dev/null 2>&1
+                    settings put global backup_enabled 0 >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService >/dev/null 2>&1
+                    echo "[DEBUG] Disable GMS succesfuly"
                 fi
                 
                 # OTHER OPTIMIZER FEATURE ON WEBUI  
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
                     cmd settings put system high_performance_mode_on 1
                     cmd settings put system high_performance_mode_on_when_shutdown 1
+                    echo "[DEBUG] ColorOS High Performance Mode Activated"
                 fi
                 
                 if [ $(settings get global cosmic_perf_opt_enable) = "true" ]; then
@@ -341,6 +336,7 @@ service_engine() {
                     cmd settings put system POWER_SAVE_MODE_OPEN 0
                     cmd settings put system POWER_SAVE_PRE_HIDE_MODE performance
                     cmd settings put system speed_mode 1
+                    echo "[DEBUG] Performance Mode Activated"
                 fi
                 
                 if [ $(settings get global cosmic_adaptive_power_enable) == "true" ]; then
@@ -349,102 +345,154 @@ service_engine() {
                     cmd power set-adaptive-power-saver-enabled false
                     cmd power set-mode 0
                     cmd deviceidle pre-idle-factor 0
+                    echo "[DEBUG] Adaptive Power Mode Activated"
                 fi
                 
                 if [ $(settings get global cosmic_dnd_enable) == "true" ]; then
                     settings put global zen_mode 1
+                    echo "[DEBUG] Do Not Disturb Activated"
                 fi
 
                 # Additional Tweaks
-                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit false
-                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 0 && settings put --user 0 system tran_default_temperature_index 0
-                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 1
-                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 0 && settings put system oplus_settings_hightemp_protect 0
-                [ $getHavyEnable == "true" ] && havy_force_stopped
+                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit false; echo "[DEBUG] Temperature Limit Activated"
+                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 0 && settings put --user 0 system tran_default_temperature_index 0; echo "[DEBUG] Bypass High Temperature Activated"
+                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 1; echo "[DEBUG] HDR Disabler Activated"
+                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 0 && settings put system oplus_settings_hightemp_protect 0; echo "[DEBUG] Temperature Protection Activated"
+                [ $getHavyEnable == "true" ] && havy_force_stopped >/dev/null 2>&1
 
                 running_mode_detection="game-mode"
                 notif_state="stop"
+            fi
+
+            if [[ $profile_state == "run" ]]; then
+                if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
+                    toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    saver_mode
+                    echo "[DEBUG][PROFILE] Saver Mode Activated"
+                    profile_detection="1"
+                elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
+                    toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Balance Mode Activated"
+                    balance_mode
+                    profile_detection="2"
+                elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
+                    toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] High Mode Activated"
+                    game_mode
+                    profile_detection="3"
+                fi
+                profile_state="stop"
+            fi
+
+            if [[ "$notif_update_state" == "run" ]]; then
+                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+                    cmd=$(echo "Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
+                    cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
+                    "beta_new_gen" \
+                    "$cmd" \
+                    >/dev/null 2>&1
+                fi
+                notif_update_state="stop"
             fi
 
         # -------- SAVER MODE ----------
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
-                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
-                   cmd=$(echo "Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
-                   cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
-                   "beta_new_gen" \
-                   "$cmd" \
-                   >/dev/null 2>&1
-                fi
+
                 main_remove_sf
-                if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
-                    toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
-                    saver_mode
-                    profile_detection="1"
-                elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
-                    toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
-                    balance_mode
-                    profile_detection="2"
-                elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
-                    toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
-                    game_mode
-                    profile_detection="3"
-                fi
+                echo "[DEBUG] Dynamic SufaceFlinger Non-Active"
                 
                 setprop debug.hwui.renderer skiagl
                 setprop debug.renderengine.backend skiagl
                 
                 if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
-                  dumpsys deviceidle whitelist -com.google.android.gms
-                  appops set com.google.android.gms WAKE_LOCK ignore
-                  appops set com.google.android.gms RUN_IN_BACKGROUND ignore
-                  appops set com.google.android.gms WAKEUP_ALARM ignore
-                  settings put global enable_google_services 0
-                  settings put global gs_location_enabled 0
-                  settings put global backup_enabled 0
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService
-                  pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService
+                    dumpsys deviceidle whitelist -com.google.android.gms
+                    appops set com.google.android.gms WAKE_LOCK ignore >/dev/null 2>&1
+                    appops set com.google.android.gms RUN_IN_BACKGROUND ignore >/dev/null 2>&1
+                    appops set com.google.android.gms WAKEUP_ALARM ignore >/dev/null 2>&1
+                    settings put global enable_google_services 0 >/dev/null 2>&1
+                    settings put global gs_location_enabled 0 >/dev/null 2>&1
+                    settings put global backup_enabled 0 >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.chimera.GmsIntentOperationService >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.stats.service.DropBoxEntryAddedService >/dev/null 2>&1
+                    pm disable-user --user 0 com.google.android.gms/com.google.android.gms.checkin.CheckinService >/dev/null 2>&1
+                    echo "[DEBUG] GMS Doze Activated"
                 fi
                 
                 # OPTIMIZER (MATCHING WEBUI)
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
-                   cmd settings put system high_performance_mode_on 0
-                   cmd settings put system high_performance_mode_on_when_shutdown 0
+                    cmd settings put system high_performance_mode_on 0
+                    cmd settings put system high_performance_mode_on_when_shutdown 0
+                    echo "[DEBUG] High Performance Mode Non-Activated"
                 fi
             
                 if [ "$(settings get global cosmic_perf_opt_enable)" = "true" ]; then
-                  settings put --user 0 system performance_mode_enable 0
-                  settings put system power_save_type_performance 1
-                  settings put system power_mode low
-                  cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
-                  cmd settings put system POWER_BALANCED_MODE_OPEN 1
-                  cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
-                  cmd settings put system POWER_SAVE_MODE_OPEN 1
-                  cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
-                  cmd settings put system speed_mode 0
+                    settings put --user 0 system performance_mode_enable 0
+                    settings put system power_save_type_performance 1
+                    settings put system power_mode low
+                    cmd settings put global security_center_pc_save_mode_data '{"a":1,"b":1,"c":0,"d":0}'
+                    cmd settings put system POWER_BALANCED_MODE_OPEN 1
+                    cmd settings put system POWER_PERFORMANCE_MODE_OPEN 0
+                    cmd settings put system POWER_SAVE_MODE_OPEN 1
+                    cmd settings put system POWER_SAVE_PRE_HIDE_MODE save
+                    cmd settings put system speed_mode 0
+                    echo "[DEBUG] Performance Optimizer Non-Activated"
                 fi
             
                 if [ "$(settings get global cosmic_adaptive_power_enable)" = "true" ]; then
-                   settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
-                   settings put global reduce_motion 1
-                   cmd deviceidle pre-idle-factor 6
+                    settings put global adaptive_battery_management_enabled 1 >/dev/null 2>&1
+                    settings put global reduce_motion 1
+                    cmd deviceidle pre-idle-factor 6
+                    echo "[DEBUG] Adaptive Power Non-Activated"
                 fi
             
                 if [ "$(settings get global cosmic_dnd_enable)" = "true" ]; then
-                   settings put global zen_mode 0
+                    settings put global zen_mode 0
+                    echo "[DEBUG] Do Not Disturb Non-Activated"
                 fi
                 
                 # Restore Settings
-                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true
-                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 1 && settings put --user 0 system tran_default_temperature_index 1
-                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 0
-                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 1 && settings put system oplus_settings_hightemp_protect 1
+                [ "$temp_limit" = "true" ] && settings put --user 0 system rt_enable_templimit true; echo "[DEBUG] Temperature Limit Non-Activated"
+                [ "$bypass_high_temp" = "true" ] && settings put --user 0 system tran_temp_battery_warning 1 && settings put --user 0 system tran_default_temperature_index 1; echo "[DEBUG] Temperature Bypass Non-Activated"
+                [ "$fos_hdr_disabler" = "true" ] && settings put global user_disable_hdr_formats 0; echo "[DEBUG] HDR Disabler Non-Activated"
+                [ "$cos_temp_protect" = "true" ] && settings put secure oppo_high_temperature_protection_status 1 && settings put system oplus_settings_hightemp_protect 1; echo "[DEBUG] Temperature Protect Non-Activated"
 
                 running_mode_detection="saver-mode"
                 notif_state="stop"
             fi
+
+            if [[ $profile_state == "run" ]]; then
+                if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
+                    toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Saver Mode Activated"
+                    saver_mode
+                    profile_detection="1"
+                elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
+                    toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Balance Mode Activated"
+                    balance_mode
+                    profile_detection="2"
+                elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
+                    toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Game Mode Activated"
+                    game_mode
+                    profile_detection="3"
+                fi
+                profile_state="stop"
+            fi
+
+            if [[ "$notif_update_state" == "run" ]]; then
+                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+                    cmd=$(echo "Update AI Engine Coamic Pro\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
+                    cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
+                    "beta_new_gen" \
+                    "$cmd" \
+                    >/dev/null 2>&1
+                fi
+                notif_update_state="stop"
+            fi
+
             cosmic --downscale
         fi
 
