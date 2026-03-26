@@ -274,14 +274,12 @@ service_engine() {
             gameDetected="true"
             mode_now="game-mode"
             if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
-                notif_state="run"
                 profile_state="run"
             fi
         else
             gameDetected="false"
             mode_now="saver-mode"
             if [[ $(settings get global cosmic_daily_mode) != "$profile_detection" ]]; then
-                notif_state="run"
                 profile_state="run"
             fi
         fi
