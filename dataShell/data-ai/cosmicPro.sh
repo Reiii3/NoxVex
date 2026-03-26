@@ -206,6 +206,7 @@ service_engine() {
     LOG_FILE="/data/local/tmp/cosmic.log"
     IDLE_TIME=2.5
     running_mode_detection=""
+    profile_detection=""
     notif_state="run"
 
     settings put global cosmic_engine_version 1.0.5_BETA
@@ -268,11 +269,17 @@ service_engine() {
             gameDetected="false"
             mode_now="saver-mode"
         fi
+        
+        if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
+           notif_state="run"
+        fi
 
         # -------- MODE SWITCH ----------
         if [[ "$mode_now" != "$running_mode_detection" ]]; then
             notif_state="run"
         fi
+        
+        
 
         # -------- GAME MODE ----------
         if [[ $gameDetected == "true" ]]; then
@@ -291,12 +298,15 @@ service_engine() {
                 if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
                     toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
                     saver_mode
+                    profile_detection="1"
                 elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
                     toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
                     balance_mode
+                    profile_detection="2"
                 elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
                     toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
+                    profile_detection="3"
                 fi
                 
                 # GMS
@@ -369,12 +379,15 @@ service_engine() {
                 if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
                     toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
                     saver_mode
+                    profile_detection="1"
                 elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
                     toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
                     balance_mode
+                    profile_detection="2"
                 elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
                     toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
                     game_mode
+                    profile_detection="3"
                 fi
                 
                 setprop debug.hwui.renderer skiagl
