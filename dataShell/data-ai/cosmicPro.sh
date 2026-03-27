@@ -101,6 +101,7 @@ game_mode() {
     cmd shortcut reset-all-throttling
     cmd thermalservice override-status 0
     cmd activity memory-factor set 0
+    cmd power set-mode 0
     cmd settings put global angle_gl_driver_all_angle 1
     cmd settings put global game_driver_all_apps 1
     cmd settings put global updatable_driver_all_apps 1
@@ -132,6 +133,7 @@ balance_mode() {
     cmd power set-fixed-performance-mode-enabled false
     cmd settings put system air_motion_engine 0
     cmd settings put system master_motion 0
+    cmd power set-mode 0
 
     # GPU Driver (aman)
     cmd settings put global angle_gl_driver_all_angle 1
@@ -217,7 +219,7 @@ service_engine() {
     notif_update_state="stop"
     profile_state="run"
 
-    settings put global cosmic_engine_version 1.0.8_BETA
+    settings put global cosmic_engine_version 1.0.9_BETA
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
@@ -290,7 +292,7 @@ service_engine() {
             profile_state="run"
         fi
         
-        if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+        if [[ "$new_status" != $(settings get global cosmic_engine_version) && "$new_status" != "" ]]; then
             notif_update_state="run"
         fi
 
@@ -491,7 +493,9 @@ service_engine() {
                 notif_update_state="stop"
             fi
 
+            echo
             cosmic --downscale
+            echo
         fi
 
         sleep "$IDLE_TIME"
