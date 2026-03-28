@@ -5,7 +5,7 @@ service_server() {
     profile_detection=""
     profile_state="run"
     
-    settings put global cosmic_engine_version 1.6.4_GEN
+    settings put global cosmic_engine_version 1.6.5_GEN
     settings put global cosmic_engine_enable limet_server.pid
     
     echo "[Service] cosmic Started at $(date)" >> "$LOG_FILE"
@@ -390,7 +390,7 @@ service_server() {
         else
             gameDetected="false"
             mode_now="saver-mode"
-            if [[ $(settings get global cosmic_game_mode) != "$profile_detection" ]]; then
+            if [[ $(settings get global cosmic_daily_mode) != "$profile_detection" ]]; then
                 profile_state="run"
             fi
         fi
