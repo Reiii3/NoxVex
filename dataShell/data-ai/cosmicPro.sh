@@ -122,8 +122,8 @@ balance_mode() {
     settings put global cosmic_profile_enable Balance-Mode
 
     # SETPROP (lebih ringan)
-    setprop debug.hwui.renderer skiavk
-    setprop debug.renderengine.backend skiavk
+    setprop debug.hwui.renderer skiagl
+    setprop debug.renderengine.backend skiagl
     setprop debug.sf.hw 1
     setprop debug.egl.hw 1
     setprop debug.hwui.trace_gpu_resources false
@@ -215,11 +215,12 @@ service_engine() {
     IDLE_TIME=2.5
     running_mode_detection=""
     profile_detection=""
+    notif_update_done=""
     notif_state="run"
     notif_update_state="stop"
     profile_state="run"
 
-    settings put global cosmic_engine_version 1.0.9_BETA
+    settings put global cosmic_engine_version 1.0.9_RC
     settings put global cosmic_engine_enable cosmicp_server.pid
     
     echo "[Service] COSMIC Pro Started at $(date)" >> "$LOG_FILE"
@@ -252,7 +253,8 @@ service_engine() {
         GAME_LIST=$(cat /data/local/tmp/game.txt)
         timer=$(TZ="Asia/Jakarta" date +"%H:%M")
         persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
-        detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
+        #detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
+        detected_apps=$(dumpsys window | grep "Window #" | grep WindowStateAnimator | grep -v "Window #0" | grep -Eo "$GAME_LIST" | head -n 1)
 
         # Enable Checking Feature
         getHavyEnable=$(settings get global cosmic_havy_apps_enable)
@@ -292,8 +294,9 @@ service_engine() {
             profile_state="run"
         fi
         
-        if [[ "$new_status" != $(settings get global cosmic_engine_version) && "$new_status" != "" ]]; then
+        if [[ "$new_status" != $(settings get global cosmic_engine_version) && "$new_status" != "" && "$notif_update_done" != "true" ]]; then
             notif_update_state="run"
+            notif_update_done="true"
         fi
 
         # -------- GAME MODE ----------
@@ -403,9 +406,6 @@ service_engine() {
                 main_remove_sf
                 echo "[DEBUG] Dynamic SufaceFlinger Non-Active"
                 
-                setprop debug.hwui.renderer skiagl
-                setprop debug.renderengine.backend skiagl
-                
                 if [[ $(settings get global cosmic_gms_doze_enable) == "true" ]]; then
                     dumpsys deviceidle whitelist -com.google.android.gms
                     appops set com.google.android.gms WAKE_LOCK ignore >/dev/null 2>&1
@@ -488,7 +488,7 @@ service_engine() {
                     cmd notification post -S bigtext -t 'Engine Update' -i "file:///storage/emulated/0/Android/media/.cosmic/notif.png" -I "file:///storage/emulated/0/Android/media/.cosmic/baner.png" \
                     "beta_new_gen" \
                     "$cmd" \
-                    >/dev/null 2>&1
+                    > /dev/null 2>&1
                 fi
                 notif_update_state="stop"
             fi
