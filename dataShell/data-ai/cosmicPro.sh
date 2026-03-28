@@ -254,7 +254,7 @@ service_engine() {
         timer=$(TZ="Asia/Jakarta" date +"%H:%M")
         persentase_battrey=$(dumpsys battery | grep level | cut -f2 -d:)
         #detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
-        detected_apps=$(dumpsys window | grep "Window #" | grep WindowStateAnimator | grep -v "Window #0" | grep -Eo "$GAME_LIST" | head -n 1)
+        detected_apps=$(dumpsys window | grep "Window #" | grep WindowStateAnimator | grep -v "Window #0" | grep -Eo "$GAME_LIST" | head -n 1) # Beta New Generation
 
         # Enable Checking Feature
         getHavyEnable=$(settings get global cosmic_havy_apps_enable)
@@ -303,6 +303,7 @@ service_engine() {
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
                 notif_run
+                notif_update_done="false"
 
                 main_active_sf
                 echo "[DEBUG] Dynamic SurfaceFlinger Actived"
@@ -402,6 +403,7 @@ service_engine() {
         else
             if [[ $notif_state == "run" ]]; then
                 notif_stop
+                notif_update_done="false"
 
                 main_remove_sf
                 echo "[DEBUG] Dynamic SufaceFlinger Non-Active"
