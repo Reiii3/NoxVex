@@ -1,11 +1,11 @@
 service_server() {
     LOG_FILE="/data/local/tmp/cosmic.log"
-    IDLE_TIME=5
+    IDLE_TIME=1.7
     running_mode_detection=""
     profile_detection=""
     profile_state="run"
     
-    settings put global cosmic_engine_version 1.6.5_GEN
+    settings put global cosmic_engine_version 1.6.6_GEN
     settings put global cosmic_engine_enable limet_server.pid
     
     echo "[Service] cosmic Started at $(date)" >> "$LOG_FILE"
@@ -319,7 +319,7 @@ service_server() {
     }
     
     notif_run() {
-        cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]\nCosmnic Injection Engine\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]\n\nCosmnic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
@@ -328,7 +328,7 @@ service_server() {
     
     
     notif_force() {
-        cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]\nCosmnic Injection Engine\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]\n\nCosmnic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
@@ -337,7 +337,7 @@ service_server() {
     
     
     notif_stop() {
-        cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]\nCosmnic Injection Engine\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]\n\nCosmnic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
@@ -407,6 +407,27 @@ service_server() {
         if [[ "$gameDetected" == "true" ]]; then
             # GAME MODE
             if [[ $persentase_battrey -ge 30 ]]; then
+                # Profile mode
+                if [[ $profile_state == "run" ]]; then
+                    if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
+                        toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                        saver_mode
+                        echo "[DEBUG][PROFILE] Saver Mode Activated"
+                        profile_detection="1"
+                    elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
+                        toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                        echo "[DEBUG][PROFILE] Balance Mode Activated"
+                        balance_mode
+                        profile_detection="2"
+                    elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
+                        toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                        echo "[DEBUG][PROFILE] High Mode Activated"
+                        game_mode
+                        profile_detection="3"
+                    fi
+                    profile_state="stop"
+                fi
+
                 if [[ "$notif_state" == "run" ]]; then
                     notif_run
                     cosmic --driver $detected_apps >/dev/null 2>&1
@@ -472,7 +493,8 @@ service_server() {
                     running_mode_detection="game-mode"
                     notif_state="skip"
                 fi
-
+            # FORCE MODE
+            elif [[ $persentase_battrey -ge 20 ]]; then
                 # Profile mode
                 if [[ $profile_state == "run" ]]; then
                     if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
@@ -493,8 +515,7 @@ service_server() {
                     fi
                     profile_state="stop"
                 fi
-            # FORCE MODE
-            elif [[ $persentase_battrey -ge 20 ]]; then
+
                 if [[ "$notif_state" == "run" ]]; then
                     notif_force
                     cosmic --driver $detected_apps >/dev/null 2>&1
@@ -560,7 +581,8 @@ service_server() {
                     running_mode_detection="force-mode"
                     notif_state="skip"
                 fi
-
+            # FORCE-SAVER MODE
+            else
                 # Profile mode
                 if [[ $profile_state == "run" ]]; then
                     if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
@@ -581,8 +603,7 @@ service_server() {
                     fi
                     profile_state="stop"
                 fi
-            # FORCE-SAVER MODE
-            else
+
                 if [[ "$notif_state" == "run" ]]; then
                     notif_stop
 
@@ -643,30 +664,30 @@ service_server() {
                     running_mode_detection="force-saver-mode"
                     notif_state="skip"
                 fi
-
-                # Profile mode
-                if [[ $profile_state == "run" ]]; then
-                    if [[ $(settings get global cosmic_game_mode) == "1" ]]; then
-                        toast "Game Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
-                        saver_mode
-                        echo "[DEBUG][PROFILE] Saver Mode Activated"
-                        profile_detection="1"
-                    elif [[ $(settings get global cosmic_game_mode) == "2" ]]; then
-                        toast "Game Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
-                        echo "[DEBUG][PROFILE] Balance Mode Activated"
-                        balance_mode
-                        profile_detection="2"
-                    elif [[ $(settings get global cosmic_game_mode) == "3" ]]; then
-                        toast "Game Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
-                        echo "[DEBUG][PROFILE] High Mode Activated"
-                        game_mode
-                        profile_detection="3"
-                    fi
-                    profile_state="stop"
-                fi
             fi
         else
             # SAVER MODE
+            # Profile mode
+            if [[ $profile_state == "run" ]]; then
+                if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
+                    toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Saver Mode Activated"
+                    saver_mode
+                    profile_detection="1"
+                elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
+                    toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Balance Mode Activated"
+                    balance_mode
+                    profile_detection="2"
+                elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
+                    toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
+                    echo "[DEBUG][PROFILE] Game Mode Activated"
+                    game_mode
+                    profile_detection="3"
+                fi
+                profile_state="stop"
+            fi
+
             if [[ "$notif_state" == "run" ]]; then
                 notif_stop
 
@@ -728,32 +749,9 @@ service_server() {
                 running_mode_detection="saver-mode"
                 notif_state="skip"
             fi
-
-            # Profile mode
-            if [[ $profile_state == "run" ]]; then
-                if [[ $(settings get global cosmic_daily_mode) == "1" ]]; then
-                    toast "Saver Mode | Cosmic Pro | Saver Profile" >/dev/null 2>&1
-                    echo "[DEBUG][PROFILE] Saver Mode Activated"
-                    saver_mode
-                    profile_detection="1"
-                elif [[ $(settings get global cosmic_daily_mode) == "2" ]]; then
-                    toast "Saver Mode | Cosmic Pro | Balance Profile" >/dev/null 2>&1
-                    echo "[DEBUG][PROFILE] Balance Mode Activated"
-                    balance_mode
-                    profile_detection="2"
-                elif [[ $(settings get global cosmic_daily_mode) == "3" ]]; then
-                    toast "Saver Mode | Cosmic Pro | High Profile" >/dev/null 2>&1
-                    echo "[DEBUG][PROFILE] Game Mode Activated"
-                    game_mode
-                    profile_detection="3"
-                fi
-                profile_state="stop"
-            fi
         fi
         
-        echo
         cosmic --dex2ot >/dev/null 2>&1
-        echo
 
         sleep "$IDLE_TIME"
     done
