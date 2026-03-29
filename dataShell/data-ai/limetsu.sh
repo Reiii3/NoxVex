@@ -319,7 +319,7 @@ service_server() {
     }
     
     notif_run() {
-        cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]\n\n​🇨​​🇴​​🇸​​🇲​​🇮​​🇨​ ​🇮​​🇳​​🇯​​🇪​​🇨​​🇹​​🇮​​🇴​​🇳​ ​🇪​​🇳​​🇬​​🇮​​🇳​​🇪​\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Game Mode ]\nLimetsU AI Engine | [Enjoy Your Game]\n\nCosmic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
@@ -328,7 +328,7 @@ service_server() {
     
     
     notif_force() {
-        cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]\n\n​🇨​​🇴​​🇸​​🇲​​🇮​​🇨​ ​🇮​​🇳​​🇯​​🇪​​🇨​​🇹​​🇮​​🇴​​🇳​ ​🇪​​🇳​​🇬​​🇮​​🇳​​🇪​\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Game Force Mode ]\nLimetsU AI Engine | [Enjoy Your Game And Battery Is Low]\n\nCosmic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
@@ -337,7 +337,7 @@ service_server() {
     
     
     notif_stop() {
-        cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]\n\n​🇨​​🇴​​🇸​​🇲​​🇮​​🇨​ ​🇮​​🇳​​🇯​​🇪​​🇨​​🇹​​🇮​​🇴​​🇳​ ​🇪​​🇳​​🇬​​🇮​​🇳​​🇪​\nRunning Service : $timer")
+        cmd=$(echo "Mode Status : [ Saver Mode ]\nLimetsU AI Engine | [Enjoy Efficiency Battery]\n\nCosmic Injection Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'LimetsU AI Engine' \
         "noxg_engine_mode" \
         "$cmd" \
