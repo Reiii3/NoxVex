@@ -56,3 +56,19 @@ engineStatus() {
         echo "STOPPED"
     fi
 }
+
+case "$1" in
+    "--start" )
+        engineStart
+        ;;
+    "--stop" )
+        engineStop
+        ;;
+    "--status" )
+        engineStatus
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
