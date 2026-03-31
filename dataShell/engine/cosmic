@@ -1,0 +1,84 @@
+start_service() {
+    # Jika PID file ada → cek apakah memang running
+    if [ -f "$PID_SERVER" ]; then
+        PID=$(cat "$PID_SERVER" 2>/dev/null)
+        if kill -0 "$PID" 2>/dev/null; then
+            echo "[!] Service already running (PID: $PID)"
+            return
+        else
+            rm -f "$PID_SERVER"
+            rm -f "$LOG_FILE"
+        fi
+    fi
+
+    echo "[+] Starting service..."
+    
+    nohup $path_ai > "$LOG_FILE" 2>&1 &
+    echo $! > "$PID_SERVER"
+
+    # Tunggu sebentar biar PID ditulis
+    sleep 0.1
+
+    # Baca PID dari file
+    if [ -f "$PID_SERVER" ]; then
+        echo "[+] Service started (PID: $(cat "$PID_SERVER"))"
+    else
+        echo "[!] Failed to start service"
+    fi
+    
+    exit 0
+}
+
+stop_service() {
+    if [ ! -f "$PID_SERVER" ]; then
+        echo "[!] Service not running"
+        exit 0
+    fi
+    
+    DIR=$(dirname $0)
+    
+    echo "$DIR"
+
+    PID=$(cat "$PID_SERVER")
+
+    if ! kill -0 "$PID" 2>/dev/null; then
+        echo "[!] PID file found but process not running. Cleaning..."
+        rm -f "$PID_SERVER"
+        exit 0
+    fi
+
+    echo "[+] Stopping service (PID: $PID)..."
+    kill "$PID"
+    rm -f "$PID_SERVER"
+    rm -f "$LOG_FILE"
+    echo "[+] Service stopped"
+}
+
+restart_service() {
+    echo "[*] Restarting service..."
+    stop_service
+    sleep 1
+    start_service
+}
+
+info_service() {
+    if [ ! -f "$PID_SERVER" ]; then
+        echo "[Status] Service: NOT RUNNING"
+        exit 0
+    fi
+
+    PID=$(cat "$PID_SERVER")
+    if kill -0 "$PID" 2>/dev/null; then
+        echo "[Status] Service: RUNNING (PID: $PID)"
+    else
+        echo "[Status] Service dead but Proses ID file exists → cleaning..."
+        rm -f "$PID_SERVER"
+    fi
+    echo "-------------- List Features Actived --------------"
+    echo "Havy Force Stoped     : $(settings get global cosmic_havy_apps_enable)"
+    echo "Cache Cleaner         : $(settings get global cosmic_cache_enable)"
+    echo "Game Compiler         : $(settings get global cosmic_game_compiler_enable)"
+    echo "Adaptive Power Saver  : $(settings get global cosmic_adaptive_power_enable)"
+    echo "GMS Doze              : $(settings get global cosmic_gms_doze_enable)"
+    echo "Performance Optimizer : $(settings get global cosmic_perf_opt_enable)"
+}
