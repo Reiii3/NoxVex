@@ -21,6 +21,7 @@ service_server() {
         cmd power set-mode 0
     
         # From lykafka module
+        setprop debug.hwui.renderer skiavk
         setprop debug.renderengine.backend skiavkthreaded
         am force-stop com.google.android.gms
         cmd activity force-stop com.xiaomi.joyose
@@ -80,6 +81,9 @@ service_server() {
     saver_mode() {
         settings delete global updatable_driver_production_opt_in >/dev/null 2>&1
         settings put global cosmic_profile_enable Power-Saver
+
+        setprop debug.hwui.renderer opengl
+        setprop debug.renderengine.backend vulkan
     
         cmd power set-adaptive-power-saver-enabled true
         cmd power set-fixed-performance-mode-enabled false
@@ -122,162 +126,6 @@ service_server() {
         if [ $(settings get global cosmic_dnd_enable) == "true" ]; then
             settings put global zen_mode 0
         fi
-    }
-    
-    install_background() {
-        apps="
-            com.facebook.katana
-            com.zhiliaoapp.musically
-            com.ss.android.ugc.trill
-            com.instagram.android
-            com.facebook.orca
-            com.snapchat.android
-            com.twitter.android
-            org.telegram.messenger
-            org.telegram.plus
-            org.thunderdog.challegram
-            com.whatsapp.w4b
-            com.ss.android.ugc.trill
-            com.openai.chatgpt
-            com.coloros.movetosdcard
-            com.google.android.apps.photos
-            com.google.android.youtube
-            com.google.android.apps.youtube.music
-            com.google.android.apps.docs
-            com.google.android.apps.maps
-            com.facebook.katana
-            com.facebook.orca
-            com.instagram.android
-            com.snapchat.android
-            com.whatsapp
-            com.zhiliaoapp.musically
-            com.ss.android.article.news
-            com.netflix.mediaclient
-            com.spotify.music
-            com.touchtype.swiftkey
-            com.google.android.as
-            com.google.android.ext.services
-            com.google.android.providers.media.module
-            com.coloros.movetosdcard
-            com.oplus.statistics.rom
-            com.coloros.weather.service
-            com.oplus.romupdate
-            com.oplus.deepthinker
-            com.oplus.gesture
-            com.heytap.accessory
-            com.oplus.nas
-        "
-        
-        ###############################################
-        # PART 1 — NON-SYSTEM PACKAGES
-        ###############################################
-        
-        for a in $apps; do
-            # Background Restriction
-            am set-inactive --user 0 $a true
-            am set-bg-restriction-level --user 0 $a hibernation
-            am set-standby-bucket $a rare
-            am service-restart-backoff disable $a
-            am set-foreground-service-delegate --user 0 $a stop
-        
-            # APP OPS LIMIT
-            appops set $a RUN_IN_BACKGROUND ignore
-            appops set $a RUN_ANY_IN_BACKGROUND ignore
-            appops set $a WAKE_LOCK deny
-            appops set $a START_IN_BACKGROUND ignore
-            appops set $a START_FOREGROUND ignore
-            appops set $a INSTANT_APP_START_FOREGROUND ignore
-            appops set $a GET_USAGE_STATS ignore
-            appops set $a RUN_USER_INITIATED_JOBS ignore
-            appops set $a MONITOR_LOCATION ignore
-            appops set $a MONITOR_HIGH_POWER_LOCATION ignore
-            appops set $a SCHEDULE_EXACT_ALARM ignore
-            appops set $a FINE_LOCATION ignore
-        
-            # Dropbox / Logging
-            cmd dropbox add-low-priority $a
-            pm log-visibility $a --disable
-        done
-        
-        ###############################################
-        # PART 4 — ADDITIONAL DEVICE_CONFIG OPTIMIZER
-        ###############################################
-        
-        # Matikan wakeup heavy apps
-        device_config set activity_manager max_cached_processes 8
-        device_config set activity_manager max_phantom_processes 16
-        device_config set activity_manager bg_start_timeout 5000
-        
-    }
-    
-    uninstall_bg() {
-        apps="
-            com.facebook.katana
-            com.zhiliaoapp.musically
-            com.ss.android.ugc.trill
-            com.instagram.android
-            com.facebook.orca
-            com.snapchat.android
-            com.twitter.android
-            org.telegram.messenger
-            org.telegram.plus
-            org.thunderdog.challegram
-            com.whatsapp.w4b
-            com.ss.android.ugc.trill
-            com.openai.chatgpt
-            com.coloros.movetosdcard
-            com.google.android.apps.photos
-            com.google.android.youtube
-            com.google.android.apps.youtube.music
-            com.google.android.apps.docs
-            com.google.android.apps.maps
-            com.facebook.katana
-            com.facebook.orca
-            com.instagram.android
-            com.snapchat.android
-            com.whatsapp
-            com.zhiliaoapp.musically
-            com.ss.android.article.news
-            com.netflix.mediaclient
-            com.spotify.music
-            com.touchtype.swiftkey
-            com.google.android.as
-            com.google.android.ext.services
-            com.google.android.providers.media.module
-            com.coloros.movetosdcard
-            com.oplus.statistics.rom
-            com.coloros.weather.service
-            com.oplus.romupdate
-            com.oplus.deepthinker
-            com.oplus.gesture
-            com.heytap.accessory
-            com.oplus.nas
-        "
-        
-        ###############################################
-        # UNDO — APP OPS
-        ###############################################
-        
-        for pkg in $apps; do
-            # Reset semua app ops ke default
-            appops reset $pkg
-        done
-        
-        ###############################################
-        # UNDO — DROPBOX + LOGGING
-        ###############################################
-        
-        for pkg in $apps; do
-            pm log-visibility $pkg --enable
-        done
-        
-        ###############################################
-        # UNDO — DEVICE_CONFIG
-        ###############################################
-        
-        device_config delete activity_manager max_cached_processes
-        device_config delete activity_manager max_phantom_processes
-        device_config delete activity_manager bg_start_timeout
     }
     
     notif_run() {
@@ -384,7 +232,8 @@ service_server() {
         # --- Midnight Action ---
         if [[ "$timer" == "00:00" ]]; then
             cache_cleaner >/dev/null 2>&1
-            gms_tweak
+            gms_tweak >/dev/null 2>&1
+            cosmic --dex2ot >/dev/null 2>&1
 
             sorted=$(echo "$GAME_LIST" | tr ',' '\n' | sort)
             for package in $sorted; do
@@ -419,7 +268,6 @@ service_server() {
             if [[ $persentase_battrey -ge 30 ]]; then
                 if [[ "$render_detected" != "skiavk" && "$notif_state" == "run" ]]; then
                     notif_run
-                    setprop debug.hwui.renderer skiavk
                     game_mode
                     cosmic --driver $detected_apps
                     cosmic --game_compiler
@@ -441,14 +289,12 @@ service_server() {
                     fi
                     if [ $getHavyEnable == "true" ]; then
                         havy_force_stopped
-                        install_background
                     fi
                 fi
             # FORCE MODE
             elif [[ $persentase_battrey -ge 20 ]]; then
                 if [[ "$notif_state" == "run" ]]; then
                     notif_force
-                    setprop debug.hwui.renderer skiavk
                     game_mode
                     cosmic --driver $detected_apps
                     cosmic --game_compiler
@@ -470,7 +316,6 @@ service_server() {
                     fi
                     if [ $getHavyEnable == "true" ]; then
                         install_background
-                        havy_force_stopped
                     fi
                 fi
             # FORCE-SAVER MODE
@@ -482,25 +327,20 @@ service_server() {
                     notif_state="stop"
                     if [ $getHavyEnable == "true" ]; then
                         havy_force_stopped
-                        uninstall_bg
                     fi
                 fi
             fi
         else
             # SAVER MODE
             if [[ "$render_detected" != "opengl" ]]; then
-                setprop debug.hwui.renderer opengl
-                setprop debug.renderengine.backend vulkan
                 notif_stop
                 saver_mode
-                uninstall_bg
                 running_mode_detection="saver-mode"
                 notif_state="stop"
             fi
             cosmic --cache_cleaner >/dev/null 2>&1
         fi
         
-        cosmic --dex2ot
 
         sleep "$IDLE_TIME"
     done
