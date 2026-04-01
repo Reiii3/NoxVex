@@ -150,7 +150,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.1_BQ
+    settings put global qiunix_engine_version 1.0.2_BQ
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
@@ -242,7 +242,7 @@ service_engine() {
             fi
 
             if [[ "$notif_update_state" == "run" ]]; then
-                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+                if [[ "$new_status" != $(settings get global qiunix_engine_version) ]]; then
                     cmd=$(echo "Update AI Engine QiunixAI\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
                     cmd notification post -S bigtext -t 'Engine Update' \
                     "beta_new_gen" \
@@ -250,7 +250,7 @@ service_engine() {
                     > /dev/null 2>&1
                 fi
                 notif_update_state="stop"
-                settings pu global qiunix_update_verif true
+                settings put global qiunix_update_verif true
             fi
 
         # -------- SAVER MODE ----------
@@ -277,7 +277,7 @@ service_engine() {
             fi
 
             if [[ "$notif_update_state" == "run" ]]; then
-                if [[ "$new_status" != $(settings get global cosmic_engine_version) ]]; then
+                if [[ "$new_status" != $(settings get global qiunix_engine_version) ]]; then
                     cmd=$(echo "Update AI Engine QiunixAI\nUpdate Version $new_status Available\n\nPlease Check Update In Plugin Cosmic")
                     cmd notification post -S bigtext -t 'Engine Update' \
                     "beta_new_gen" \
@@ -285,7 +285,7 @@ service_engine() {
                     > /dev/null 2>&1
                 fi
                 notif_update_state="stop"
-                settings pu global qiunix_update_verif true
+                settings put global qiunix_update_verif true
             fi
         fi
 
