@@ -57,6 +57,21 @@ engineStatus() {
     fi
 }
 
+downscale() {
+    android=$1
+    pkg=$2
+    downscale=$3
+    angle=$4
+    frame=$5
+    if [[ "$android" -gt "34" ]]; then
+        device_config put game_overlay $pkg mode=2,downscaleFaktor=$downscale,useAngle=$angle,fps=$frame,loadingBoost=999999999
+        cmd game set --mode 2 --downscale $downscale --angle $angle --fps $frame $pkg
+    elif [[ "$android" -le "30" ]]; then
+        device_config put game_overlay $pkg mode=2,downscaleFaktor=$downscale,useAngle=$angle,fps=$frame,loadingBoost=999999999
+        cmd game mode 2 $pkg
+    fi
+}
+
 case "$1" in
     "--start" )
         engineStart
