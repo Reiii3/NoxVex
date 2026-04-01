@@ -150,7 +150,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.4_Alpha
+    settings put global qiunix_engine_version 1.0.5_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
@@ -159,7 +159,7 @@ service_engine() {
         render=$(getprop debug.hwui.renderer)
         backend=$(getprop debug.renderengine.backend)
         compotion=$(getprop debug.composition.type)
-        cmd=$(echo "Profile Status : [ Game Mode ]\nQiunixAI Engine | Enjoy Your Game\n[ Render : $render | Backend : $backend | Composition : $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
+        cmd=$(echo "Profile Status : [ Game Mode ]\nQiunixAI Engine | Enjoy Your Game\n[ $render | $backend | $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'QiunixAI Engine' \
         "beta_new_gen" \
         "$cmd" \
@@ -170,7 +170,7 @@ service_engine() {
         render=$(getprop debug.hwui.renderer)
         backend=$(getprop debug.renderengine.backend)
         compotion=$(getprop debug.composition.type)
-        cmd=$(echo "Profile Status : [ Saver Mode ]\nQiunixAI Engine | Efficiency Battery\n[ Render : $render | Backend : $backend | Composition : $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
+        cmd=$(echo "Profile Status : [ Saver Mode ]\nQiunixAI Engine | Efficiency Battery\n[ $render | $backend | $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'QiunixAI Engine' \
         "beta_new_gen" \
         "$cmd" \

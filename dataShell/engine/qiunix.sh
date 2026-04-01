@@ -1,5 +1,4 @@
 engineStart() {
-    chmod 777 /data/user_de/0/com.android.shell/axeron/xbin/qiunixAI
     if [[ -f /data/local/tmp/qiunixai.pid ]]; then
         PID=$(cat /data/local/tmp/qiunixai.pid)
         if kill -0 $PID > /dev/null 2>&1; then
@@ -58,16 +57,17 @@ engineStatus() {
 }
 
 downscale() {
-    android=$2
-    pkg=$3
-    downscale=$4
-    angle=$5
-    frame=$6
-    if [[ "$android" -gt "34" ]]; then
-        device_config put game_overlay $pkg mode=2,downscaleFaktor=$downscale,useAngle=$angle,fps=$frame,loadingBoost=999999999
-        cmd game set --mode 2 --downscale $downscale --angle $angle --fps $frame $pkg
-    elif [[ "$android" -le "30" ]]; then
-        device_config put game_overlay $pkg mode=2,downscaleFaktor=$downscale,useAngle=$angle,fps=$frame,loadingBoost=999999999
+    android=$1
+    pkg=$2
+    value_downscale=$3
+    value_angle=$4
+    value_frame=$5
+
+    if [[ "$android" -gt 30 ]]; then
+        device_config put game_overlay $pkg mode=2,downscaleFactor=$value_downscale,useAngle=$value_angle,fps=$value_frame,loadingBoost=999999999
+        cmd game set --mode 2 --downscale $value_downscale --angle $value_angle --fps $value_frame $pkg
+    else
+        device_config put game_overlay $pkg mode=2,downscaleFactor=$value_downscale,useAngle=$value_angle,fps=$value_frame,loadingBoost=999999999
         cmd game mode 2 $pkg
     fi
 }
