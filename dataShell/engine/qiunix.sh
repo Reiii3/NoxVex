@@ -57,11 +57,11 @@ engineStatus() {
 }
 
 downscale() {
-    android=$1
-    pkg=$2
-    value_downscale=$3
-    value_angle=$4
-    value_frame=$5
+    android=$2
+    pkg=$3
+    value_downscale=$4
+    value_angle=$5
+    value_frame=$6
 
     if [[ "$android" -gt 30 ]]; then
         device_config put game_overlay $pkg mode=2,downscaleFactor=$value_downscale,useAngle=$value_angle,fps=$value_frame,loadingBoost=999999999

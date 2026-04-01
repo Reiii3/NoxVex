@@ -150,7 +150,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.5_Alpha
+    settings put global qiunix_engine_version 1.0.6_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
