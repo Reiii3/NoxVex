@@ -70,11 +70,12 @@ main_remove_sf() {
 
 game_mode() {
     # SET PROFILE STATUS TO WEBUI STATUS
-    settings put global cosmic_profile_enable Game-Mode
+    settings put global qiunix_profile_enable Game-Mode
 
     # SETPROP
-    setprop debug.hwui.renderer skiavk
-    setprop debug.renderengine.backend skiavkthreaded
+    setprop debug.hwui.renderer $(settings get global qiunix_render_value)
+    setprop debug.renderengine.backend $(settings get global qiunix_render_backend_value)
+    setprop debug.composition.type $(settings get global qiunix_composition_value)
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
@@ -82,7 +83,6 @@ game_mode() {
     #setprop debug.gpurend.vsync false
     setprop debug.egl.force_msaa false
     setprop debug.performance.tuning 1
-    setprop debug.composition.type mdp
 
     # CPU Cluster
     setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
@@ -116,7 +116,7 @@ game_mode() {
 
 saver_mode() {
     # SET PROFILE STATUS
-    settings put global cosmic_profile_enable Saver-Mode
+    settings put global qiunix_profile_enable Saver-Mode
 
     # SETPROP (LOW POWER)
     setprop debug.hwui.renderer skiagl
@@ -150,13 +150,16 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.2_BQ
+    settings put global qiunix_engine_version 1.0.3_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
 
     notif_run() {
-        cmd=$(echo "Profile Status : [ Game Mode ]\nQiunixAI Engine | Enjoy Your Game\n\nNew Generation Engine\nRunning Service : $timer")
+        render=$(getprop debug.hwui.renderer)
+        backend=$(getprop debug.renderengine.backend)
+        compotion=$(getprop debug.composition.type)
+        cmd=$(echo "Profile Status : [ Game Mode ]\nQiunixAI Engine | Enjoy Your Game\n[ Render : $render | Backend : $backend | Composition : $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'QiunixAI Engine' \
         "beta_new_gen" \
         "$cmd" \
@@ -164,7 +167,10 @@ service_engine() {
     }
 
     notif_stop() {
-        cmd=$(echo "Profile Status : [ Saver Mode ]\nQiunixAI Engine | Efficiency Battery\n\nNew Generation Engine\nRunning Service : $timer")
+        render=$(getprop debug.hwui.renderer)
+        backend=$(getprop debug.renderengine.backend)
+        compotion=$(getprop debug.composition.type)
+        cmd=$(echo "Profile Status : [ Saver Mode ]\nQiunixAI Engine | Efficiency Battery\n[ Render : $render | Backend : $backend | Composition : $compotion ]\n\nNew Generation Engine\nRunning Service : $timer")
         cmd notification post -S bigtext -t 'QiunixAI Engine' \
         "beta_new_gen" \
         "$cmd" \
@@ -221,7 +227,6 @@ service_engine() {
         # -------- GAME MODE ----------
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
-                notif_run
                 notif_update_done="false"
 
                 main_active_sf
@@ -229,6 +234,7 @@ service_engine() {
                 
                 game_mode # Mode Game Tweak
                 echo "[DEBUG] Game Mode Actived"
+                notif_run
 
                 # OTHER OPTIMIZER FEATURE ON WEBUI  
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
@@ -256,7 +262,6 @@ service_engine() {
         # -------- SAVER MODE ----------
         else
             if [[ $notif_state == "run" ]]; then
-                notif_stop
                 notif_update_done="false"
 
                 main_remove_sf
@@ -264,6 +269,7 @@ service_engine() {
 
                 saver_mode # Mode Saver Tweak
                 echo "[DEBUG] Saver Mode Actived"
+                notif_stop
                 
                 # OPTIMIZER (MATCHING WEBUI)
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
