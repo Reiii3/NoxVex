@@ -75,7 +75,7 @@ game_mode() {
     # SETPROP
     setprop debug.hwui.renderer $(settings get global qiunix_render_value)
     setprop debug.renderengine.backend $(settings get global qiunix_render_backend_value)
-    setprop debug.composition.type $(settings get global qiunix_composition_value)
+    setprop debug.composition.type $(settings get global qiunix_compotion_value)
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
@@ -150,7 +150,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.6_Alpha
+    settings put global qiunix_engine_version 1.0.7_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
