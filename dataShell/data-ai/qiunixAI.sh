@@ -75,7 +75,7 @@ game_mode() {
     # SETPROP
     setprop debug.hwui.renderer $(settings get global qiunix_render_value)
     setprop debug.renderengine.backend $(settings get global qiunix_render_backend_value)
-    setprop debug.composition.type $(settings get global qiunix_composition_value)
+    setprop debug.composition.type $(settings get global qiunix_compotion_value)
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
