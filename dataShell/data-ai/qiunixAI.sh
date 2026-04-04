@@ -79,8 +79,8 @@ game_mode() {
     setprop debug.egl.hw 1
     setprop debug.sf.hw 1
     setprop debug.hwui.trace_gpu_resources false
-    #setprop debug.cpurend.vsync false
-    #setprop debug.gpurend.vsync false
+    setprop debug.cpurend.vsync false
+    setprop debug.gpurend.vsync false
     setprop debug.egl.force_msaa false
     setprop debug.performance.tuning 1
 
@@ -133,12 +133,20 @@ saver_mode() {
     cmd deviceidle enable deep
     cmd deviceidle enable light
     cmd power set-adaptive-power-saver-enabled true
-    cmd power set-mode 1
     cmd thermalservice override-status 3
     cmd activity memory-factor set 3
     cmd settings put global angle_gl_driver_all_angle 0
     cmd settings put global game_driver_all_apps 0
     cmd settings put global updatable_driver_all_apps 0
+
+    cmd device_config put activity_manager max_cached_processes 35535
+    cmd device_config put activity_manager max_phantom_processes 35535
+    cmd device_config put activity_manager max_empty_time_millis 10000
+    cmd device_config put activity_manager bg_fgs_monitor_enabled true
+    cmd device_config put activity_manager bg_current_drain_auto_restrict_abusive_apps_enabled true
+    cmd device_config put activity_manager bg_media_session_monitor_enabled true
+    cmd device_config put activity_manager bg_permission_monitor_enabled true
+    cmd device_config put activity_manager_native_boot modern_queue_enabled false
 }
 
 # ENGINE SERVICE
@@ -150,7 +158,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.6_Alpha
+    settings put global qiunix_engine_version 1.0.7_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"

@@ -56,22 +56,6 @@ engineStatus() {
     fi
 }
 
-downscale() {
-    android=$2
-    pkg=$3
-    value_downscale=$4
-    value_angle=$5
-    value_frame=$6
-
-    if [[ "$android" -gt 30 ]]; then
-        device_config put game_overlay $pkg mode=2,downscaleFactor=$value_downscale,useAngle=$value_angle,fps=$value_frame,loadingBoost=999999999
-        cmd game set --mode 2 --downscale $value_downscale --angle $value_angle --fps $value_frame $pkg
-    else
-        device_config put game_overlay $pkg mode=2,downscaleFactor=$value_downscale,useAngle=$value_angle,fps=$value_frame,loadingBoost=999999999
-        cmd game mode 2 $pkg
-    fi
-}
-
 case "$1" in
     "--start" )
         engineStart
@@ -81,9 +65,6 @@ case "$1" in
         ;;
     "--status" )
         engineStatus
-        ;;
-    "--downscale" )
-        downscale "$2" "$3" "$4" "$5" "$6"
         ;;
     *)
         echo "Usage: $0 {start|stop|status}"
