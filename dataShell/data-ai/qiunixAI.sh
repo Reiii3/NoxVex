@@ -218,7 +218,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.8_Alpha
+    settings put global qiunix_engine_version 1.0.9_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
@@ -292,15 +292,13 @@ service_engine() {
             notif_state="run"
         fi
         
-        if [[ "$new_status" != $(settings get global qiunix_engine_version) && "$new_status" != "" && "$notif_update_done" != "true" && "$getStatusUpdate" != "true" && $(settings get global qiunix_engine_version) != "null" ]]; then
+        if [[ "$new_status" != $(settings get global qiunix_engine_version) && "$new_status" != "" && "$getStatusUpdate" != "true" && $(settings get global qiunix_engine_version) != "null" ]]; then
             notif_update_state="run"
-            notif_update_done="true"
         fi
 
         # -------- GAME MODE ----------
         if [[ $gameDetected == "true" ]]; then
             if [[ $notif_state == "run" ]]; then
-                notif_update_done="false"
 
                 main_active_sf
                 echo "[DEBUG] Dynamic SurfaceFlinger Actived"
@@ -351,7 +349,6 @@ service_engine() {
         # -------- SAVER MODE ----------
         else
             if [[ $notif_state == "run" ]]; then
-                notif_update_done="false"
 
                 main_remove_sf
                 echo "[DEBUG] Dynamic SufaceFlinger Non-Active"
