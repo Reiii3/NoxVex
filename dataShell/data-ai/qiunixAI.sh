@@ -84,12 +84,6 @@ game_mode() {
     setprop debug.egl.force_msaa false
     setprop debug.performance.tuning 1
 
-    # CPU Cluster
-    setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
-    setprop debug.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
-    setprop debug.powehint.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq)
-    setprop debug.powehint.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)
-
     # CMD
     cmd power set-fixed-performance-mode-enabled true
     cmd settings put system air_motion_engine 0
@@ -149,6 +143,72 @@ saver_mode() {
     cmd device_config put activity_manager_native_boot modern_queue_enabled false
 }
 
+boost_pkg() {
+    pkg="$1"
+
+    # Cek apakah paket terinstall
+    if ! pm list packages | grep -q "$pkg"; then
+        echo "[!] Package tidak ditemukan di perangkat"
+        return
+    fi
+
+    echo "[+] Boosting: $pkg"
+
+    # 1. Set standby bucket ke ACTIVE (lebih prioritas)
+    cmd usage events >/dev/null 2>&1
+    cmd jobscheduler run -f "$pkg" 0 >/dev/null 2>&1
+    cmd jobscheduler run -f "$pkg" 1 >/dev/null 2>&1
+    cmd activity set-standby-bucket "$pkg" ACTIVE >/dev/null 2>&1
+
+    # 2. Disable battery optimization
+    cmd deviceidle whitelist +$pkg >/dev/null 2>&1
+    dumpsys deviceidle whitelist +$pkg >/dev/null 2>&1
+    
+    am set-process-important "$pkg" true >/dev/null 2>&1
+    
+    if cmd game | grep -q "setGameMode"; then
+        cmd game mode "$pkg" performance >/dev/null 2>&1
+    fi
+
+    am start-foreground-service -n "$pkg"/.MainService >/dev/null 2>&1 2>/dev/null
+
+    echo "[+] Apps Boost Successfully"
+}
+
+kill_bg_apps() {
+    # daftar paket yang mau disapu
+    # nanti bisa kamu custom
+    apps="
+    com.facebook.katana
+    com.instagram.android
+    com.whatsapp
+    com.tiktok.android
+    com.netflix.mediaclient
+    "
+
+    echo "[+] Membersihkan background apps..."
+
+    # 1. Stop semua tasks yang sedang idle
+    cmd activity clear-recent-apps >/dev/null 2>&1
+
+    # 2. Restrict standby bucket → RARE (supaya autokill)
+    for pkg in $apps; do
+        echo "[•] Restricting $pkg"
+        cmd activity set-standby-bucket "$pkg" RARE >/dev/null 2>&1
+    done
+
+    # 3. Force-stop apps (cara paling efektif untuk non-root)
+    for pkg in $apps; do
+        echo "[•] Killing $pkg"
+        am force-stop "$pkg" >/dev/null 2>&1
+    done
+
+    # 4. Hemat RAM dengan kill cached processes
+    cmd activity kill-all >/dev/null 2>&1
+
+    echo "[✓] Background cleaned!"
+}
+
 # ENGINE SERVICE
 service_engine() {
     LOG_FILE="/data/local/tmp/qiunixai.log"
@@ -158,7 +218,7 @@ service_engine() {
     notif_state="run"
     notif_update_state="stop"
 
-    settings put global qiunix_engine_version 1.0.7_Alpha
+    settings put global qiunix_engine_version 1.0.8_Alpha
     settings put global qiunix_engine_enable qiunixai.pid
     
     echo "[Service] QiunixAI Started at $(date)" >> "$LOG_FILE"
@@ -200,6 +260,11 @@ service_engine() {
         #detected_apps=$(dumpsys activity processes | grep top-activity | cut -d ':' -f4 | cut -d '/' -f1 | head -n 1)
         detected_apps=$(dumpsys window | grep "Window #" | grep WindowStateAnimator | grep -v "Window #0" | grep -Eo "$GAME_LIST" | head -n 1) # Beta New Generation
 
+        # Get Enable value feature
+        getKillBackground=$(settings get global qiunix_background_apps_enabled)
+        getGamePrio=$(settings get global qiunix_game_priority_enabled)
+        getCpuCluster=$(settinsg get global qiunix_cpu_cluster_enabled)
+
         # Enable Checking Feature
         getStatusUpdate=$(settings get global qiunix_update_verif)
 
@@ -227,7 +292,7 @@ service_engine() {
             notif_state="run"
         fi
         
-        if [[ "$new_status" != $(settings get global qiunix_engine_version) && "$new_status" != "" && "$notif_update_done" != "true" && "$getStatusUpdate" != "true" ]]; then
+        if [[ "$new_status" != $(settings get global qiunix_engine_version) && "$new_status" != "" && "$notif_update_done" != "true" && "$getStatusUpdate" != "true" && $(settings get global qiunix_engine_version) != "null" ]]; then
             notif_update_state="run"
             notif_update_done="true"
         fi
@@ -242,14 +307,30 @@ service_engine() {
                 
                 game_mode # Mode Game Tweak
                 echo "[DEBUG] Game Mode Actived"
-                notif_run
-
                 # OTHER OPTIMIZER FEATURE ON WEBUI  
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
                     cmd settings put system high_performance_mode_on 1
                     cmd settings put system high_performance_mode_on_when_shutdown 1
                     echo "[DEBUG] ColorOS High Performance Mode Activated"
                 fi
+                if [[ $getCpuCluster == "true" ]]; then
+                    # CPU Cluster
+                    setprop debug.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq) >/dev/null 2>&1
+                    setprop debug.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq) >/dev/null 2>&1
+                    setprop debug.powehint.cluster_little-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq) >/dev/null 2>&1
+                    setprop debug.powehint.cluster_big-set_his_speed $(cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq) >/dev/null 2>&1
+                    echo "[DEBUG] CPU Cluster Activated"
+                fi
+                if [[ $getGamePrio == 'true' ]]; then
+                    echo "[DEBUG] Game Priority Activated"
+                    boost_pkg $detected_apps
+                fi
+                if [[ $getKillBackground == 'true' ]]; then
+                    echo "[DEBUG] Kill Background Activated"
+                    kill_bg_apps
+                fi
+                notif_run
+                toast "Game Mode | QiunixAI Engine"
 
                 running_mode_detection="game-mode"
                 notif_state="stop"
@@ -278,6 +359,7 @@ service_engine() {
                 saver_mode # Mode Saver Tweak
                 echo "[DEBUG] Saver Mode Actived"
                 notif_stop
+                toast "Saver Mode | QiunixAI Engine"
                 
                 # OPTIMIZER (MATCHING WEBUI)
                 if [[ $(settings get system high_performance_mode_on 2>/dev/null) ]]; then
