@@ -263,7 +263,7 @@ service_engine() {
         # Get Enable value feature
         getKillBackground=$(settings get global qiunix_background_apps_enabled)
         getGamePrio=$(settings get global qiunix_game_priority_enabled)
-        getCpuCluster=$(settinsg get global qiunix_cpu_cluster_enabled)
+        getCpuCluster=$(settings get global qiunix_cpu_cluster_enabled)
 
         # Enable Checking Feature
         getStatusUpdate=$(settings get global qiunix_update_verif)
