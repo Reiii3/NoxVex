@@ -1,5 +1,3 @@
 # hide semua source shell
 dataShell/data-ai/*.sh
-
-# hide file hasil compile C (shc)
 *.c

@@ -1,3 +1,4 @@
+#!/bin/bash
 # PRO LICENSE
 # BUILD IN 12/3/2026
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 # BETA New Generation Engine
 # Cosmis AI Engine Pro Version
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 service_server() {
     LOG_FILE="/data/local/tmp/cosmic.log"
     IDLE_TIME=1.7
