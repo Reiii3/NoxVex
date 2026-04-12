@@ -1,3 +1,5 @@
+#!/bin/bash
+
 run_sf=1000000000
 remove_sf=1000000
 
