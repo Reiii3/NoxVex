@@ -4,20 +4,29 @@
     "version": "1.1.5_BETA",
     "nama": "Cosmic AI Engine",
     "description": "AI Engine Yang Berfoku pada penngkatan performa secara siknifikan dan peningkatan optimalisasi game lebih cepat",
-    "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmic.sh"
+    "source": {
+      "arm32": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmic_arm32",
+      "arm64": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmic_arm64"
+    }
   },
   {
     "id": "cosmicPro",
     "version": "1.0.9_RC",
     "nama": "Cosmic Pro AI Engine",
     "description": "AI Engine Cosmic Pro Ini Merupakan Re-Builder Dari Engine terdahulu nya Dengan Ini Engine Ini Telah di kalibrasi ulang, (BETA)",
-    "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmicPro.sh"
+    "source": {
+      "arm32": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmicPro_arm32",
+      "arm64": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/cosmicPro_arm64"
+    }
   },
   {
     "id": "limetsu",
     "version": "1.6.6_GEN",
     "nama": "Limetsu AI Engine",
     "description": "AI Engine Yang Berfokus pada efisiensi penggunaan optimasi serta stabilitas system memungkinkan minim nya terjadi overhead",
-    "source": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/limetsu.sh"
+    "source": {
+      "arm32": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/limetsu_arm32",
+      "arm64": "https://raw.githubusercontent.com/Reiii3/NoxVex/main/dataShell/data-ai/limetsu_arm64"
+    }
   }
 ]
