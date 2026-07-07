@@ -1,31 +1,77 @@
-## 🚀 Version 1045-190626-S Update | Stable Release
+## AxVision Update v1047-070726-S
 
-> This update focuses on migrating the old Web UI, which was relatively heavy for low-end devices. In Web UI version 1.0.3, performance issues were noticeable on lower-end smartphones. With this release, we have worked to significantly improve optimization and overall responsiveness.»
+> This update focuses on optimizing the plugin, including the WebUI, engine, and various internal components. It reflects our continuous commitment to improving AxVision. We have now reached version **1047-070726-S**, which was not an easy milestone. Throughout development, our team encountered and resolved numerous bugs before this release was finally ready. Below are the major changes included in this update.
 
-## ✨ Changes & Improvements
-> **🎨 Major UI/UX Overhaul**
-The user interface has been completely redesigned to provide a more modern, responsive, and user-friendly experience.»
+### - Engine Improvements
 
-## 🌐 Web UI Updated
-> The Web UI is now running on version 1.0.2-0045-PX, bringing improved stability, better performance optimization, and various visual enhancements.
+> Several issues were found in the engine, particularly affecting the `Frame Rate` and `Game Driver` functions. These bugs have now been fixed, allowing both features to operate normally again.
 
-## ⚙️ Engine Update
-> The engine has been upgraded to version 1036-Alpha-S, featuring multiple internal optimizations to improve efficiency and system compatibility.
+### - New Features in Engine v1042
 
-**What's New in This Version?**
-- Improved Background Killer Tweak, reducing RAM usage caused by background applications and allowing games to utilize system resources more effectively.
-- Adjustments to tweaks available in Performance, Balanced, and Saver profiles to achieve more optimal performance across different usage scenarios.
+> We have introduced several new features in Engine v1042:
 
-## 🎮 Game Library Improvements
-> The Game Library has received feature updates and system refinements to provide a better game management experience.
+* **Multitask Mode**
 
-- Added a new UI for registering games so they can be detected by the Daemon.
-- Improvements to the Game Library feature, with updates that will be released periodically through Online Updates.
+  > This feature allows you to control the amount of RAM that background applications can use, helping improve memory efficiency and overall multitasking performance.
+
+* **CMD Tweak**
+
+  > CMD Tweak is based on the original CMD optimization from the AxManager plugin. Thanks to its open-source implementation, we were able to integrate this feature into the AxVision engine. Special thanks to **[HoyoSlave](https://t.me/HoyoSlave)** for the original work.
+
+* **Smart Compact**
+
+  > Smart Compact helps reduce RAM fragmentation, improves large memory allocation, and increases overall memory efficiency.
+
+* **Auto Cut Charging** `For OPPO Devices`
+
+  > This feature is specifically designed for OPPO devices. It enables the built-in Auto Cut Charging system when supported by the device, allowing users to play games while charging with greater peace of mind. The engine will automatically activate this feature once the charging threshold is reached.
+
+* **Profile Protect**
+
+  > Profile Protect is a mechanism developed to automatically switch performance profiles when the device temperature rises. This helps maintain stable performance while preventing excessive heat.
+
+* **And Many More Features**
+
+  > Additional improvements and new features have also been added throughout the engine.
+
+### - New Features in Game Library
+
+> In the previous **v1045** update, we accidentally omitted the Game Library configuration. At that time, the update shipped with Engine **v1036**, which did not yet include the necessary configuration. During our Engine **v1038** testing through **Daemon Monitor**, we successfully completed the implementation. As a result, features such as `Game Driver`, `Graphic Scale`, and `Frame Rate` became available.
+
+#### New Addition
+
+* **Dynamic Frame Rate**
+
+  > With this feature, users no longer need to manually configure the Frame Rate setting. Our WebUI can now automatically detect the highest supported frame rate available on your device.
+
+### - WebUI Updates
+
+> This is the largest UI update we have ever released for AxVision. We've made significant improvements across multiple areas.
+
+* **New UI Theme**
+
+  > We admit that the UI in **v1045** was not well optimized and felt too heavy for entry-level devices. In this release, we redesigned the interface using an **Android 16-inspired** color theme while making it cleaner and more responsive.
+
+* **WebUI Optimization**
+
+  > The optimization in v1045 was far from ideal. After extensive maintenance, we successfully eliminated approximately **70%** of the bottlenecks responsible for UI lag, resulting in a much smoother experience.
+
+* **UI Branding**
+
+  > Previous releases did not have a dedicated UI name. Starting from versions **1045** and **1047**, the interface is officially branded as **VISIONUI** version **10200-UI**. This naming system helps simplify future maintenance and version management.
+
+* **And Many More Improvements**
+
+  > There are many additional refinements throughout the interface that you can explore yourself.
+
+### - About Available Features
+
+> **Available Features** is our solution for delivering new functionality without requiring users to update the entire plugin. Instead, we only need to update the engine version, allowing newly released online patches to unlock additional features automatically. We hope this approach makes it easier for everyone to enjoy new functionality without downloading a full plugin update.
+
 ---
 
-## 🔧 Additional Fixes
-- System performance optimizations.
-- Refinements to several user interface components.
-- Minor bug fixes and overall stability improvements.
-
-> Thank you for using our system. Stay tuned for future updates featuring even more improvements and exciting new features.»
+> There is still a lot more we could explain about this release, as it is one of the biggest updates we've ever worked on. However, I'll keep it brief since I'm honestly feeling a bit under the weather while writing this changelog. I hope you all understand.
+>
+> Finally, I would like to sincerely thank everyone for supporting **AxVision**. We have now reached over **7,000 users**, and seeing the community continue to grow means a lot to us.
+>
+> **Thank you for your continued support! 😊**
