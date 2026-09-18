@@ -1,4 +1,4 @@
-## 🚀 Pembaruan Versi 1048-210826-S | Pembuatan Ulang Engine
+## 🚀 Pembaruan Versi 1052-180926-S | Pembuatan Ulang Engine
 
 > Pembaruan ini berfokus pada pembuatan ulang atau menulis ulang kode program Engine Daemon dan CLI nya dengan ini kami berharap bisa mengurangi bug yang sebelum nya ada dan juga deengan adanya penulisan ulang ini kami melakukan sebuah configurasi ulang tweak nya dengan melakukan pengurangan dan penambahan jenis kode tweak nya denganb ini kami harap dapat membuat daemon versi kali ini bisa lebih Optimal
 

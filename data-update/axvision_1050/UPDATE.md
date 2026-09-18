@@ -1,6 +1,4 @@
-Here is the English translation of the update logs, keeping the original formatting intact:
-
-## 🚀 Version 1048-210826-S Update | Engine Rewrite
+## 🚀 Version 1052-180926-S Update | Engine Rewrite
 
 > This update focuses on rebuilding or rewriting the program code for the Engine Daemon and its CLI. With this, we hope to reduce previous bugs. Additionally, with this rewrite, we have reconfigured the tweaks by adding and removing certain tweak codes. We hope this makes this version of the daemon more optimal.
 
